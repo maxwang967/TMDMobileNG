@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mainFragment"
+        android:icon="@mipmap/icon"
+        android:title="@string/fragment_label_main" />
+    <item
+        android:id="@+id/collectFragment"
+        android:icon="@mipmap/icon"
+        android:title="@string/fragment_label_collect" />
+    <item
+        android:id="@+id/detectionFragment"
+        android:icon="@mipmap/icon"
+        android:title="@string/fragment_label_detection" />
+</menu>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools" android:id="@+id/nav_graph_main"
+    app:startDestination="@id/mainFragment">
+
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.morningstarwang.tmdmobileng.ui.main.MainFragment"
+        android:label="@string/fragment_label_main"
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/collectFragment"
+        android:name="com.morningstarwang.tmdmobileng.ui.collect.CollectFragment"
+        android:label="@string/fragment_label_collect"
+        tools:layout="@layout/fragment_collect" />
+    <fragment
+        android:id="@+id/detectionFragment"
+        android:name="com.morningstarwang.tmdmobileng.ui.detection.DetectionFragment"
+        android:label="@string/fragment_label_detection"
+        tools:layout="@layout/fragment_detection" />
+</navigation>
