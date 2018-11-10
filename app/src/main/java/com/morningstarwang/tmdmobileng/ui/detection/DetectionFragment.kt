@@ -2,12 +2,16 @@ package com.morningstarwang.tmdmobileng.ui.detection
 
 
 import android.os.Bundle
+import android.util.Log.i
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.TextView
+import com.google.android.material.tabs.TabItem
+import com.google.android.material.tabs.TabLayout
+import com.morningstarwang.tmdmobileng.DETECTION_MODEL
 import com.morningstarwang.tmdmobileng.R
 import kotlinx.android.synthetic.main.fragment_detection.*
 
@@ -15,7 +19,7 @@ class DetectionFragment : Fragment() {
 
     var confusionMatrix = Array<Array<TextView?>>(9) { arrayOfNulls(9) }
     var matrixHeaders: Array<String> = arrayOf(
-        "空",
+        "",
         "静",
         "行",
         "跑",
@@ -32,11 +36,32 @@ class DetectionFragment : Fragment() {
     ): View? {
         return inflater.inflate(R.layout.fragment_detection, container, false)
     }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initConfusionMatrix()
+        refreshDetectionModeUI()
     }
+
+    private fun refreshDetectionModeUI() {
+        if (DETECTION_MODEL != -1){
+            detectionTabLayout.getTabAt(DETECTION_MODEL)?.select()
+        }else{
+            DETECTION_MODEL = detectionTabLayout.selectedTabPosition
+        }
+        detectionTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
+            override fun onTabReselected(p0: TabLayout.Tab?) {
+            }
+
+            override fun onTabUnselected(p0: TabLayout.Tab?) {
+            }
+
+            override fun onTabSelected(p0: TabLayout.Tab?) {
+                DETECTION_MODEL = p0?.position!!
+            }
+
+        })
+    }
+
 
     private fun initConfusionMatrix() {
 
