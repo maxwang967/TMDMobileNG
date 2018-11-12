@@ -2,24 +2,24 @@ package com.morningstarwang.tmdmobileng.ui.collect
 
 import android.app.Application
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.HandlerThread
-import android.util.Log
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.morningstarwang.tmdmobileng.App
+import com.morningstarwang.tmdmobileng.MainActivity
+import com.morningstarwang.tmdmobileng.SENSOR_DATA_RECEIVER
 import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.receiver.CollectUIUpdateReceiver
 import com.morningstarwang.tmdmobileng.receiver.SensorDataReceiver
 import com.morningstarwang.tmdmobileng.service.SensorService
-import java.util.ArrayList
 
 class CollectViewModel(application: Application) : AndroidViewModel(application), LifecycleObserver {
 
-    val context = application
+    private val context = application
     val lacc: MutableLiveData<SensorData> = MutableLiveData()
     val acc: MutableLiveData<SensorData> = MutableLiveData()
     val gyr: MutableLiveData<SensorData> = MutableLiveData()
@@ -35,33 +35,25 @@ class CollectViewModel(application: Application) : AndroidViewModel(application)
         if (isChecked) {
             App.isCollecting = true
             activity?.startService(Intent(activity, SensorService::class.java))
-            val handlerThread = HandlerThread("SAVE_DATA")
-            handlerThread.start()
-            val looper = handlerThread.looper
-            val handler = Handler(looper)
-            activity?.registerReceiver(
-                SensorDataReceiver(),
-                IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.SAVE_DATA"),
-                null,
-                handler
-            )
+            (activity as MainActivity).registerTargetReceiver(SENSOR_DATA_RECEIVER)
         } else {
             App.isCollecting = false
             activity?.stopService(Intent(activity, SensorService::class.java))
+            (activity as MainActivity).unregisterTargetReceiver(SENSOR_DATA_RECEIVER)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun registerUIUpdateReceiver(){
-        context?.registerReceiver(
-            uiReceiver,
-            IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.UPDATE_UI")
+        context.registerReceiver(
+            uiReceiver!!,
+            IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.UPDATE_COLLECT_UI")
         )
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun unRegisterUIUpdateReceiver(){
-        context?.unregisterReceiver(uiReceiver)
+        context.unregisterReceiver(uiReceiver!!)
     }
 
 

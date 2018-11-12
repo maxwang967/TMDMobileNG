@@ -64,6 +64,7 @@ dependencies {
     // ConstraintLayout
     implementation "org.jetbrains.anko:anko-constraint-layout:$anko_version"
 
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
 //    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
 //    kapt "com.github.bumptech.glide:compiler:$rootProject.glideVersion"
     implementation "android.arch.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"

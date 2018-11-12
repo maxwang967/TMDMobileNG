@@ -2,7 +2,6 @@ package com.morningstarwang.tmdmobileng.ui.collect
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +44,12 @@ class CollectFragment : BaseFragment() {
                 btnCollect.isChecked = false
                 return@setOnCheckedChangeListener
             }
-            (currentViewModel as CollectViewModel)?.btnCollectOnClick(isChecked, activity)
+            if(App.isPredicting){
+                toast(getString(R.string.alert_stop_predict_first))
+                btnCollect.isChecked = true
+                return@setOnCheckedChangeListener
+            }
+            (currentViewModel as CollectViewModel).btnCollectOnClick(isChecked, activity)
         }
     }
 

@@ -2,23 +2,35 @@ package com.morningstarwang.tmdmobileng
 
 import android.Manifest
 import android.content.Intent
+import android.content.IntentFilter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.util.Log.e
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.morningstarwang.tmdmobileng.databinding.ActivityMainBinding
+import com.morningstarwang.tmdmobileng.receiver.CollectUIUpdateReceiver
+import com.morningstarwang.tmdmobileng.receiver.PredictDataReceiver
+import com.morningstarwang.tmdmobileng.receiver.SensorDataReceiver
 import com.morningstarwang.tmdmobileng.service.SensorService
 import kr.co.namee.permissiongen.PermissionFail
 import kr.co.namee.permissiongen.PermissionGen
 import org.jetbrains.anko.toast
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var drawerLayout: DrawerLayout
+    private lateinit var predictDataReceiver: PredictDataReceiver
+    private lateinit var sensorDataReceiver: SensorDataReceiver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +84,43 @@ class MainActivity : AppCompatActivity() {
                 Manifest.permission.READ_EXTERNAL_STORAGE)
             .request()
     }
+
+
+
+    fun registerTargetReceiver(mode: Int){
+        when(mode){
+            PREDICT_DATA_RECEIVER -> {
+                predictDataReceiver = PredictDataReceiver()
+                registerReceiver(predictDataReceiver,
+                    IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.PREDICT")
+                    )
+            }
+            SENSOR_DATA_RECEIVER -> {
+                sensorDataReceiver = SensorDataReceiver()
+                registerReceiver(
+                    sensorDataReceiver,
+                    IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.SAVE_DATA")
+                )
+            }
+        }
+    }
+
+
+    fun unregisterTargetReceiver(mode: Int){
+        when(mode){
+            PREDICT_DATA_RECEIVER -> this.unregisterReceiver(predictDataReceiver)
+            SENSOR_DATA_RECEIVER -> this.unregisterReceiver(sensorDataReceiver)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun unregisterReceivers(){
+        e("activity-onPause", "onPause")
+        unregisterTargetReceiver(PREDICT_DATA_RECEIVER)
+        unregisterTargetReceiver(SENSOR_DATA_RECEIVER)
+    }
+
+
 
 
 

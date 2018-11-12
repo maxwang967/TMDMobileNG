@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
+import com.morningstarwang.tmdmobileng.App
 import com.morningstarwang.tmdmobileng.R
 import com.morningstarwang.tmdmobileng.REAL_MODE
 import com.morningstarwang.tmdmobileng.TIMESTAMP
@@ -46,6 +47,12 @@ class MainFragment : BaseFragment() {
             if(!checkIfAtLeastOneRadioChecked()){
                 toast(getString(R.string.alert_at_least_one_mode))
                 btnModeSelect.isChecked  = false
+                return@setOnCheckedChangeListener
+            }
+            if (App.isCollecting ||
+                    App.isPredicting){
+                toast("请先停止数据采集和模式识别操作。")
+                btnModeSelect.isChecked = true
                 return@setOnCheckedChangeListener
             }
             if (isChecked) {

@@ -30,11 +30,13 @@
     <string name="fragment_detection_recognition_stop">停止识别</string>
     <string name="fragment_main_confirm">确认</string>
     <string name="fragment_main_cancel">取消</string>
-    <string name="fragment_detection_result_vote">投票结果：</string>
-    <string name="fragment_detection_result_model">模型预测结果：</string>
+    <string name="fragment_detection_result_vote">投票：</string>
+    <string name="fragment_detection_result_model">模型：</string>
     <string name="n_a">N/A</string>
-    <string name="fragment_detection_accuracy_model">模型准确率：</string>
-    <string name="fragment_detection_accuracy_vote">投票准确率：</string>
+    <string name="fragment_detection_accuracy_model_current">模型(当前)：</string>
+    <string name="fragment_detection_accuracy_vote_current">投票(当前)：</string>
+    <string name="fragment_detection_accuracy_model_total">模型(总体)：</string>
+    <string name="fragment_detection_accuracy_vote_total">投票(总体)：</string>
     <string name="fragment_collect_acc">加速度Acc</string>
     <string name="x">X轴：</string>
     <string name="y">Y轴：</string>
@@ -48,6 +50,8 @@
     <string name="value">值：</string>
     <string name="alert_stop_collect">请先停止数据采集，再更换当前模式。</string>
     <string name="alert_at_least_one_mode">请至少选择一种模式。</string>
-    <string name="alert_select_mode_first">请先选择模式，再进行数据采集操作。</string>
+    <string name="alert_select_mode_first">请先选择模式，再进行操作。</string>
     <string name="alert_permission_must_be_given">App需要此权限才能正常运行。</string>
+    <string name="alert_collect_first">请先开启数据采集，再进行操作。</string>
+    <string name="alert_stop_predict_first">请先停止识别，再进行操作。</string>
 </resources>
