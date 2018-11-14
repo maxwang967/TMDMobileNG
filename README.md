@@ -1,4 +1,5 @@
 # TMDMobileNG
+Language Support: Simplified Chinese, English
 ## Introduction
 TMDMobileNG is the client side of C/S system. It's sensor collector and a AI transportation mode detector. The model is updating on the server side. And this application is mostly for research use. It will be great if you provide your suggestions about our Application or the detection way itself.
 ## Architecture
