@@ -121,6 +121,7 @@ class SensorService : Service() {
                 magList.size > 0 &&
                 pressureList.size > 0
             ) {
+
                 val intent = Intent().apply {
                     putExtra("lacc", laccList[laccList.size - 1])
                     putExtra("acc", accList[accList.size - 1])
