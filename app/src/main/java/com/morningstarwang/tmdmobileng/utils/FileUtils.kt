@@ -3,8 +3,8 @@ package com.morningstarwang.tmdmobileng.utils
 import android.os.Environment
 import java.io.*
 
-object FileUtils{
-    fun saveObject(obj: Any, fileName: String){
+object FileUtils {
+    fun saveObject(obj: Any, fileName: String) {
         runOnIoThread {
             var path = Environment.getExternalStorageDirectory().absolutePath + "/"
             path += "tmd_mobile/"
@@ -16,10 +16,10 @@ object FileUtils{
         }
     }
 
-    fun loadObject(fileName: String): Any?{
+    fun loadObject(fileName: String): Any? {
         var path = Environment.getExternalStorageDirectory().absolutePath + "/"
         path += "tmd_mobile/"
-        if(!File(path, fileName).exists()){
+        if (!File(path, fileName).exists()) {
             return null
         }
         val istream = FileInputStream(path + fileName)
@@ -29,11 +29,11 @@ object FileUtils{
         return obj
     }
 
-    fun deleteFile(fileName: String){
+    fun deleteFile(fileName: String) {
         var path = Environment.getExternalStorageDirectory().absolutePath + "/"
         path += "tmd_mobile/"
         val deleteFile = File(path + fileName)
-        if(deleteFile.exists()){
+        if (deleteFile.exists()) {
             deleteFile.delete()
         }
     }

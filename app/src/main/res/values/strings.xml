@@ -64,4 +64,5 @@
     <string name="alert_reset_ok">重置成功！</string>
     <string name="no">否</string>
     <string name="software_update">软件更新</string>
+    <string name="alert_downloading_apk">下载APK中，请稍候…</string>
 </resources>

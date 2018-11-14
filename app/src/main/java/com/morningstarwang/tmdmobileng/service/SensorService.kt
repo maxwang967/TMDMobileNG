@@ -1,21 +1,22 @@
 package com.morningstarwang.tmdmobileng.service
 
+import android.annotation.SuppressLint
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
-import android.hardware.SensorManager
-import android.os.IBinder
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
-import android.hardware.SensorManager.*
+import android.hardware.SensorManager
+import android.hardware.SensorManager.SENSOR_DELAY_FASTEST
+import android.hardware.SensorManager.SENSOR_DELAY_GAME
 import android.os.Bundle
+import android.os.IBinder
 import android.os.Parcelable
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.util.Log.e
 import android.util.Log.i
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.gson.Gson
 import com.morningstarwang.tmdmobileng.*
 import com.morningstarwang.tmdmobileng.bean.CacheData
@@ -25,7 +26,6 @@ import com.morningstarwang.tmdmobileng.utils.ApiUtils
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import okhttp3.ResponseBody
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import retrofit2.Call
 import retrofit2.Response
 import java.util.*
@@ -56,16 +56,17 @@ class SensorService : Service() {
         LinkedList<Int>(),
         LinkedList<Int>()
     )
-    private var voteResultCounts = arrayListOf<Array<Int>>(
-        Array<Int>(8){0},
-        Array<Int>(8){0},
-        Array<Int>(8){0},
-        Array<Int>(8){0},
-        Array<Int>(8){0}
+    private var voteResultCounts = arrayListOf(
+        Array(8) { 0 },
+        Array(8) { 0 },
+        Array(8) { 0 },
+        Array(8) { 0 },
+        Array(8) { 0 }
     )
 
     private var wakeLock: PowerManager.WakeLock? = null
 
+    @SuppressLint("WakelockTimeout")
     override fun onCreate() {
         i("SensorService", "onCreate")
         e("Service-Thread", Thread.currentThread().name)
@@ -138,10 +139,10 @@ class SensorService : Service() {
                 gyrList.size >= WINDOW_SIZE &&
                 magList.size >= WINDOW_SIZE &&
                 pressureList.size < WINDOW_SIZE &&
-                        pressureList.size > 0
-            ){
+                pressureList.size > 0
+            ) {
                 val pressureCopyCat = pressureList[pressureList.size - 1]
-                for (i in 0 until WINDOW_SIZE - pressureList.size){
+                for (i in 0 until WINDOW_SIZE - pressureList.size) {
                     e("count", i.toString())
                     pressureList.add(pressureCopyCat)
                 }
@@ -213,12 +214,12 @@ class SensorService : Service() {
             var accList: List<SensorData>? = bundle.getParcelableArrayList("accList")
             var gyrList: List<SensorData>? = bundle.getParcelableArrayList("gyrList")
             var magList: List<SensorData>? = bundle.getParcelableArrayList("magList")
-            var pressureList: List<Float> = bundle.getFloatArray("pressureList").toList()
+            var pressureList: List<Float> = bundle.getFloatArray("pressureList")?.toList()!!
             laccList = laccList?.slice(0 until WINDOW_SIZE)
             accList = accList?.slice(0 until WINDOW_SIZE)
             gyrList = gyrList?.slice(0 until WINDOW_SIZE)
             magList = magList?.slice(0 until WINDOW_SIZE)
-            pressureList = pressureList?.slice(0 until WINDOW_SIZE)
+            pressureList = pressureList.slice(0 until WINDOW_SIZE)
             e("laccList", laccList?.size.toString())
             e("accList", accList?.size.toString())
             e("gyrList", gyrList?.size.toString())
@@ -243,7 +244,7 @@ class SensorService : Service() {
                 ApiUtils.predict(4, body)
             )
             calls.forEachIndexed { index, call ->
-                if ((index == 0 || index == 1) && (REAL_MODE == 0 || REAL_MODE == 1 || REAL_MODE == 2 || REAL_MODE ==3)){
+                if ((index == 0 || index == 1) && (REAL_MODE == 0 || REAL_MODE == 1 || REAL_MODE == 2 || REAL_MODE == 3)) {
                     App.predictResult[index] = getString(R.string.alert_not_support)
                     App.voteResult[index] = getString(R.string.alert_not_support)
                     return@forEachIndexed
@@ -269,9 +270,9 @@ class SensorService : Service() {
                                 -1
                             }
                         }
-                        val predictResult = when(result){
+                        val predictResult = when (result) {
                             "Still" -> getString(R.string.fragment_radio_still)
-                            "Walk" ->  getString(R.string.fragment_radio_walk)
+                            "Walk" -> getString(R.string.fragment_radio_walk)
                             "Run" -> getString(R.string.fragment_radio_run)
                             "Bike" -> getString(R.string.fragment_radio_bike)
                             "Car" -> getString(R.string.fragment_radio_car)
@@ -296,41 +297,41 @@ class SensorService : Service() {
                         //投票
                         App.totalAllCountVote[index]++
                         App.currentAllCountVote[index]++
-                        if (voteResultQueues[index].size >= VOTE_QUEUE_LENGTH){
+                        if (voteResultQueues[index].size >= VOTE_QUEUE_LENGTH) {
                             voteResultQueues[index].poll()
                         }
                         voteResultQueues[index].offer(predictMode)
                         val iterator = voteResultQueues[index].iterator()
-                        while (iterator.hasNext()){
+                        while (iterator.hasNext()) {
                             val label = iterator.next()
                             voteResultCounts[index][label] += 1
                         }
                         val maxCount = Collections.max(voteResultCounts[index].asList())
                         var idx = -1
-                        for(i in 0..voteResultCounts[index].size - 1){
-                            if(voteResultCounts[index][i] == maxCount){
+                        for (i in 0 until voteResultCounts[index].size) {
+                            if (voteResultCounts[index][i] == maxCount) {
                                 idx = i
                                 break
                             }
                         }
-                        App.voteResult[index] = when(idx){
-                            0 ->  getString(R.string.fragment_radio_still)
+                        App.voteResult[index] = when (idx) {
+                            0 -> getString(R.string.fragment_radio_still)
                             1 -> getString(R.string.fragment_radio_walk)
-                            2 ->  getString(R.string.fragment_radio_run)
-                            3 ->  getString(R.string.fragment_radio_bike)
-                            4 ->  getString(R.string.fragment_radio_car)
+                            2 -> getString(R.string.fragment_radio_run)
+                            3 -> getString(R.string.fragment_radio_bike)
+                            4 -> getString(R.string.fragment_radio_car)
                             5 -> getString(R.string.fragment_radio_bus)
-                            6 ->  getString(R.string.fragment_radio_train)
-                            7 ->  getString(R.string.fragment_radio_subway)
+                            6 -> getString(R.string.fragment_radio_train)
+                            7 -> getString(R.string.fragment_radio_subway)
                             else -> {
                                 getString(R.string.n_a)
                             }
                         }
-                        if (idx == REAL_MODE){
+                        if (idx == REAL_MODE) {
                             App.totalCorrectCountVote[index]++
                             App.currentCorrectCountVote[index]++
                         }
-                        voteResultCounts[index] = Array<Int>(8){0}
+                        voteResultCounts[index] = Array(8) { 0 }
 
 
                         //更新UI
@@ -341,7 +342,10 @@ class SensorService : Service() {
                     }
                 })
             }
-            FileUtils.saveObject(CacheData(App.confusionValues, App.totalAllCountVote, App.totalCorrectCountVote), "tmd_ng_cache.bin")
+            FileUtils.saveObject(
+                CacheData(App.confusionValues, App.totalAllCountVote, App.totalCorrectCountVote),
+                "tmd_ng_cache.bin"
+            )
         }
 
 

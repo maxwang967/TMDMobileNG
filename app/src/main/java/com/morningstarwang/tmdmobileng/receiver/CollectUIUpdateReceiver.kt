@@ -3,7 +3,6 @@ package com.morningstarwang.tmdmobileng.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log.i
 import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.ui.collect.CollectViewModel
 

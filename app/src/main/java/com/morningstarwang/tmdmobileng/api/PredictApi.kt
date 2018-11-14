@@ -1,4 +1,4 @@
-package com.morningstarwang.tmd_mobile_next.api
+package com.morningstarwang.tmdmobileng.api
 
 import okhttp3.RequestBody
 import okhttp3.ResponseBody

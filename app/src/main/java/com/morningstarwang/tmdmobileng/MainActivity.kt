@@ -33,7 +33,6 @@ import com.morningstarwang.tmdmobileng.bean.CacheData
 import com.morningstarwang.tmdmobileng.bean.UpdateData
 import com.morningstarwang.tmdmobileng.databinding.ActivityMainBinding
 import com.morningstarwang.tmdmobileng.receiver.DownloadReceiver
-import com.morningstarwang.tmdmobileng.receiver.PredictDataReceiver
 import com.morningstarwang.tmdmobileng.receiver.SensorDataReceiver
 import com.morningstarwang.tmdmobileng.service.SensorService
 import com.morningstarwang.tmdmobileng.utils.FileUtils
@@ -43,15 +42,15 @@ import kr.co.namee.permissiongen.PermissionSuccess
 import org.jetbrains.anko.activityUiThreadWithContext
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import java.io.File
 import java.net.URL
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var drawerLayout: DrawerLayout
-    private lateinit var predictDataReceiver: PredictDataReceiver
     private lateinit var sensorDataReceiver: SensorDataReceiver
 
-    private inline fun <reified T : Any> Gson.fromJson(json: String): T {
+    private inline fun <reified T : Any> fromJson(json: String): T {
         return Gson().fromJson(json, T::class.java)
     }
 
@@ -67,8 +66,10 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         //添加以支持侧边栏项目响应事件
         binding.navigationView.setupWithNavController(navController)
         requestPermission()
-        registerReceiver(DownloadReceiver(),
-            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        registerReceiver(
+            DownloadReceiver(),
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+        )
         loadLocalData()
     }
 
@@ -118,33 +119,37 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     }
 
     @PermissionSuccess(requestCode = 100)
-    fun checkForUpdate(){
+    fun checkForUpdate() {
         doAsync {
+            val apkFile = File(Environment.getExternalStorageDirectory().absolutePath + "/tmd_mobile/ng.apk")
+            if (apkFile.exists()) {
+                apkFile.delete()
+            }
             val url = URL(UPDATE_URL)
-            val updateInfo =  try {
+            val updateInfo = try {
                 val content = url.readText()
                 e("content", content)
-                val updateData : UpdateData = Gson().fromJson(content)
+                val updateData: UpdateData = fromJson(content)
                 e("updateData=", updateData.toString())
                 updateData
             } catch (e: Exception) {
                 null
             }
-            val packageInfo = packageManager.getPackageInfo(packageName,0)
+            val packageInfo = packageManager.getPackageInfo(packageName, 0)
             e("versionCode", PackageInfoCompat.getLongVersionCode(packageInfo).toString())
             val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
-            if(versionCode < updateInfo?.versionCode!!.toLong()){
+            if (versionCode < updateInfo?.versionCode!!.toLong()) {
                 e("update", "has new version")
                 activityUiThreadWithContext {
                     val context = this
                     AlertDialog.Builder(this).apply {
                         setTitle(getString(R.string.software_update))
-                        setMessage("我们做了以下工作：\n"+updateInfo.description)
-                        if (updateInfo.force == 0){
-                            setNegativeButton("暂不更新"){_, _->
+                        setMessage("我们做了以下工作：\n" + updateInfo.description)
+                        if (updateInfo.force == 0) {
+                            setNegativeButton("暂不更新") { _, _ ->
                             }
                         }
-                        setPositiveButton("立即更新"){_,_ ->
+                        setPositiveButton("立即更新") { _, _ ->
                             downloadAPK(context, updateInfo)
                         }
                         setCancelable(false)
@@ -159,7 +164,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         val request = try {
             val request = DownloadManager.Request(Uri.parse(updateInfo.url))
             request
-        }catch (e: Exception){
+        } catch (e: Exception) {
             e("update error:", e.message)
             null
         }
@@ -199,7 +204,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         )
         llParam.gravity = Gravity.CENTER
         val tvText = TextView(context)
-        tvText.text = "下载APK中，请稍候..."
+        tvText.text = getString(R.string.alert_downloading_apk)
         tvText.setTextColor(Color.parseColor("#000000"))
         tvText.textSize = 14F
         tvText.layoutParams = llParam
@@ -237,13 +242,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     fun registerTargetReceiver(mode: Int) {
         when (mode) {
-            PREDICT_DATA_RECEIVER -> {
-                predictDataReceiver = PredictDataReceiver()
-                registerReceiver(
-                    predictDataReceiver,
-                    IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.PREDICT")
-                )
-            }
             SENSOR_DATA_RECEIVER -> {
                 sensorDataReceiver = SensorDataReceiver()
                 registerReceiver(
@@ -257,7 +255,6 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     fun unregisterTargetReceiver(mode: Int) {
         when (mode) {
-            PREDICT_DATA_RECEIVER -> this.unregisterReceiver(predictDataReceiver)
             SENSOR_DATA_RECEIVER -> this.unregisterReceiver(sensorDataReceiver)
         }
     }

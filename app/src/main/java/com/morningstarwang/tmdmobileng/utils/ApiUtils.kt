@@ -1,9 +1,8 @@
 package com.morningstarwang.tmdmobileng.utils
 
 import android.util.Log.e
-import androidx.annotation.WorkerThread
-import com.morningstarwang.tmd_mobile_next.api.PredictApi
 import com.morningstarwang.tmdmobileng.*
+import com.morningstarwang.tmdmobileng.api.PredictApi
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -28,9 +27,9 @@ object ApiUtils {
         .baseUrl(BASE_URL_HWB)
         .build()
 
-    fun predict(model: Int, bodyContent: String): Call<ResponseBody>?{
+    fun predict(model: Int, bodyContent: String): Call<ResponseBody>? {
         e("predict.Thread", Thread.currentThread().name)
-        val service = when(model){
+        val service = when (model) {
             0 -> retrofitICTNew.create(PredictApi::class.java)
             1 -> retrofitICTOld.create(PredictApi::class.java)
             2 -> retrofitHTC.create(PredictApi::class.java)
@@ -41,7 +40,7 @@ object ApiUtils {
             }
         }
         val body = RequestBody.create(MediaType.parse("application/json"), bodyContent)
-        return when(model){
+        return when (model) {
             0 -> service?.predictICTNew(body)
             1 -> service?.predictICTOld(body)
             2 -> service?.predictHTC(body)

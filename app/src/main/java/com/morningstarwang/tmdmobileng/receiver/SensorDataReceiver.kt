@@ -27,7 +27,7 @@ class SensorDataReceiver : BroadcastReceiver() {
                 val gyrList: ArrayList<SensorData>? = bundle.getParcelableArrayList("gyrList")
                 val magList: ArrayList<SensorData>? = bundle.getParcelableArrayList("magList")
                 val pressureList = bundle.getFloatArray("pressureList")
-                for (i in 0 until 449){
+                for (i in 0 until 449) {
                     val laccX = laccList?.get(i)?.x
                     val laccY = laccList?.get(i)?.y
                     val laccZ = laccList?.get(i)?.z
@@ -44,11 +44,12 @@ class SensorDataReceiver : BroadcastReceiver() {
                     val magY = magList?.get(i)?.y
                     val magZ = magList?.get(i)?.z
 
-                    val pressure = pressureList[i]
+                    val pressure = pressureList?.get(i)
 
-                    val content = "$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1}\n"
+                    val content =
+                        "$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1}\n"
                     var modeName = ""
-                    when(REAL_MODE){
+                    when (REAL_MODE) {
                         0 -> modeName = "Still"
                         1 -> modeName = "Walk"
                         2 -> modeName = "Run"
@@ -60,7 +61,7 @@ class SensorDataReceiver : BroadcastReceiver() {
                     }
                     val path = "${Environment.getExternalStorageDirectory().absolutePath}/tmd_mobile/"
                     val directory = File(path)
-                    if (!directory.exists()){
+                    if (!directory.exists()) {
                         directory.mkdir()
                     }
                     val saveFile = File(path, "$modeName-$TIMESTAMP-NG.csv")

@@ -1,14 +1,13 @@
 package com.morningstarwang.tmdmobileng.ui.main
 
 import android.app.AlertDialog
-import android.content.DialogInterface
-import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.ViewModelProviders
 import com.morningstarwang.tmdmobileng.App
 import com.morningstarwang.tmdmobileng.R
 import com.morningstarwang.tmdmobileng.REAL_MODE
@@ -18,7 +17,6 @@ import com.morningstarwang.tmdmobileng.ui.BaseFragment
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.toast
-import java.io.File
 
 class MainFragment : BaseFragment() {
 
@@ -48,7 +46,7 @@ class MainFragment : BaseFragment() {
         }
         (currentViewModel as MainViewModel).setAnnouncementText()
         btnReset.setOnClickListener {
-            if(btnModeSelect.isChecked || App.isCollecting || App.isPredicting){
+            if (btnModeSelect.isChecked || App.isCollecting || App.isPredicting) {
                 toast(getString(R.string.alert_reset_before))
                 return@setOnClickListener
             }
@@ -83,20 +81,20 @@ class MainFragment : BaseFragment() {
                     App.currentAllCountVote = arrayListOf(0, 0, 0, 0, 0)
                     toast(getString(R.string.alert_reset_ok))
                 }
-                setNegativeButton(getString(R.string.no)){
-                    _, _ ->
+                setNegativeButton(getString(R.string.no)) { _, _ ->
                 }
             }.create().show()
         }
 
         btnModeSelect.setOnCheckedChangeListener { _, isChecked ->
-            if(!checkIfAtLeastOneRadioChecked()){
+            if (!checkIfAtLeastOneRadioChecked()) {
                 toast(getString(R.string.alert_at_least_one_mode))
-                btnModeSelect.isChecked  = false
+                btnModeSelect.isChecked = false
                 return@setOnCheckedChangeListener
             }
             if (App.isCollecting ||
-                    App.isPredicting){
+                App.isPredicting
+            ) {
                 toast("请先停止数据采集和模式识别操作。")
                 btnModeSelect.isChecked = true
                 return@setOnCheckedChangeListener
@@ -109,12 +107,12 @@ class MainFragment : BaseFragment() {
                     rbRun.isChecked -> REAL_MODE = 2
                     rbBike.isChecked -> REAL_MODE = 3
                     rbCar.isChecked -> REAL_MODE = 4
-                    rbBus.isChecked -> REAL_MODE =  5
+                    rbBus.isChecked -> REAL_MODE = 5
                     rbTrain.isChecked -> REAL_MODE = 6
                     rbSubway.isChecked -> REAL_MODE = 7
                 }
                 disableRadios()
-            }else{
+            } else {
                 enableRadios()
             }
         }
@@ -153,7 +151,7 @@ class MainFragment : BaseFragment() {
         rbSubway.isEnabled = true
     }
 
-    private fun setRadios(realMode: Int){
+    private fun setRadios(realMode: Int) {
         when (realMode) {
             0 -> rbStill.isChecked = true
             1 -> rbWalk.isChecked = true

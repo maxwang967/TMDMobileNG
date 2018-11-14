@@ -2,22 +2,13 @@ package com.morningstarwang.tmdmobileng.ui.detection
 
 import android.app.Application
 import android.content.BroadcastReceiver
-import android.content.Intent
 import android.content.IntentFilter
-import android.os.Handler
-import android.os.HandlerThread
 import android.util.Log.e
 import android.widget.TextView
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.*
 import com.morningstarwang.tmdmobileng.App
 import com.morningstarwang.tmdmobileng.DETECTION_MODEL
-import com.morningstarwang.tmdmobileng.MainActivity
-import com.morningstarwang.tmdmobileng.PREDICT_DATA_RECEIVER
 import com.morningstarwang.tmdmobileng.receiver.DetectionUIUpdateReceiver
-import com.morningstarwang.tmdmobileng.receiver.PredictDataReceiver
-import com.morningstarwang.tmdmobileng.utils.FileUtils
-import org.jetbrains.anko.layoutInflater
 
 class DetectionViewModel(application: Application) : AndroidViewModel(application), LifecycleObserver {
 
@@ -44,20 +35,18 @@ class DetectionViewModel(application: Application) : AndroidViewModel(applicatio
         "地"
     )
 
-    var uiReceiver: BroadcastReceiver? = null
+    private var uiReceiver: BroadcastReceiver? = null
 
     init {
         uiReceiver = DetectionUIUpdateReceiver(this)
     }
 
-    fun btnDetectionOnClick(isChecked: Boolean, activity: FragmentActivity?) {
+    fun btnDetectionOnClick(isChecked: Boolean) {
         if (isChecked) {
             App.isPredicting = true
             resetCurrentVariables()
-            (activity as MainActivity).registerTargetReceiver(PREDICT_DATA_RECEIVER)
         } else {
             App.isPredicting = false
-            (activity as MainActivity).unregisterTargetReceiver(PREDICT_DATA_RECEIVER)
         }
     }
 
@@ -73,9 +62,6 @@ class DetectionViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun loadDataFromLocal() {
-        FileUtils.loadObject("0.bin")
-    }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun registerUIUpdateReceiver() {
