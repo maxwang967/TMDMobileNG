@@ -5,13 +5,15 @@ import java.io.*
 
 object FileUtils{
     fun saveObject(obj: Any, fileName: String){
-        var path = Environment.getExternalStorageDirectory().absolutePath + "/"
-        path += "tmd_mobile/"
-        val os = FileOutputStream(File(path + fileName))
-        val oos = ObjectOutputStream(os)
-        oos.writeObject(obj)
-        oos.flush()
-        oos.close()
+        runOnIoThread {
+            var path = Environment.getExternalStorageDirectory().absolutePath + "/"
+            path += "tmd_mobile/"
+            val os = FileOutputStream(File(path + fileName))
+            val oos = ObjectOutputStream(os)
+            oos.writeObject(obj)
+            oos.flush()
+            oos.close()
+        }
     }
 
     fun loadObject(fileName: String): Any?{

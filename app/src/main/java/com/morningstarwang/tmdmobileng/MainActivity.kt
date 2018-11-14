@@ -1,13 +1,24 @@
 package com.morningstarwang.tmdmobileng
 
 import android.Manifest
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import androidx.appcompat.app.AppCompatActivity
+import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
+import android.os.Environment
 import android.util.Log.e
+import android.view.Gravity
+import android.view.ViewGroup
+import android.view.WindowManager
+import android.widget.LinearLayout
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.pm.PackageInfoCompat
 import androidx.core.view.GravityCompat
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
@@ -17,20 +28,32 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.google.gson.Gson
+import com.morningstarwang.tmdmobileng.bean.CacheData
+import com.morningstarwang.tmdmobileng.bean.UpdateData
 import com.morningstarwang.tmdmobileng.databinding.ActivityMainBinding
-import com.morningstarwang.tmdmobileng.receiver.CollectUIUpdateReceiver
+import com.morningstarwang.tmdmobileng.receiver.DownloadReceiver
 import com.morningstarwang.tmdmobileng.receiver.PredictDataReceiver
 import com.morningstarwang.tmdmobileng.receiver.SensorDataReceiver
 import com.morningstarwang.tmdmobileng.service.SensorService
+import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kr.co.namee.permissiongen.PermissionFail
 import kr.co.namee.permissiongen.PermissionGen
+import kr.co.namee.permissiongen.PermissionSuccess
+import org.jetbrains.anko.activityUiThreadWithContext
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import java.net.URL
 
 class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var predictDataReceiver: PredictDataReceiver
     private lateinit var sensorDataReceiver: SensorDataReceiver
+
+    private inline fun <reified T : Any> Gson.fromJson(json: String): T {
+        return Gson().fromJson(json, T::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,17 +67,36 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         //添加以支持侧边栏项目响应事件
         binding.navigationView.setupWithNavController(navController)
         requestPermission()
+        registerReceiver(DownloadReceiver(),
+            IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        loadLocalData()
+    }
+
+    private fun loadLocalData() {
+        try {
+            val previousData = FileUtils.loadObject("tmd_ng_cache.bin")
+            App.confusionValues = (previousData as CacheData).confusionValues
+            App.totalCorrectCountVote = previousData.totalCorrectCountVote
+            App.totalAllCountVote = previousData.totalAllCountVote
+        } catch (e: Exception) {
+            App.confusionValues = App.confusionValues
+            App.totalCorrectCountVote = App.totalCorrectCountVote
+            App.totalAllCountVote = App.totalAllCountVote
+            e("bin not found:", e.message)
+        }
     }
 
     //添加以支持汉堡菜单按钮响应事件
     override fun onSupportNavigateUp(): Boolean {
-        return NavigationUI.navigateUp(drawerLayout,
-            Navigation.findNavController(this, R.id.main_nav_fragment))
+        return NavigationUI.navigateUp(
+            drawerLayout,
+            Navigation.findNavController(this, R.id.main_nav_fragment)
+        )
     }
 
     //添加以支持汉堡菜单返回按钮响应事件
     override fun onBackPressed() {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         }
         super.onBackPressed()
@@ -75,25 +117,132 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         requestPermission()
     }
 
+    @PermissionSuccess(requestCode = 100)
+    fun checkForUpdate(){
+        doAsync {
+            val url = URL(UPDATE_URL)
+            val updateInfo =  try {
+                val content = url.readText()
+                e("content", content)
+                val updateData : UpdateData = Gson().fromJson(content)
+                e("updateData=", updateData.toString())
+                updateData
+            } catch (e: Exception) {
+                null
+            }
+            val packageInfo = packageManager.getPackageInfo(packageName,0)
+            e("versionCode", PackageInfoCompat.getLongVersionCode(packageInfo).toString())
+            val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
+            if(versionCode < updateInfo?.versionCode!!.toLong()){
+                e("update", "has new version")
+                activityUiThreadWithContext {
+                    val context = this
+                    AlertDialog.Builder(this).apply {
+                        setTitle(getString(R.string.software_update))
+                        setMessage("我们做了以下工作：\n"+updateInfo.description)
+                        if (updateInfo.force == 0){
+                            setNegativeButton("暂不更新"){_, _->
+                            }
+                        }
+                        setPositiveButton("立即更新"){_,_ ->
+                            downloadAPK(context, updateInfo)
+                        }
+                        setCancelable(false)
+                    }.create().show()
+                }
+            }
+        }
+    }
+
+    private fun downloadAPK(context: Context, updateInfo: UpdateData) {
+
+        val request = try {
+            val request = DownloadManager.Request(Uri.parse(updateInfo.url))
+            request
+        }catch (e: Exception){
+            e("update error:", e.message)
+            null
+        }
+        request?.apply {
+            setTitle("交通模式识别NG软件更新")
+            setDescription(updateInfo.description)
+            allowScanningByMediaScanner()
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            setDestinationInExternalPublicDir("/tmd_mobile", "ng.apk")
+        }
+        val manager = context.applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        manager.enqueue(request)
+        setProgressDialog(context)
+    }
+
+    private fun setProgressDialog(context: Context) {
+        val llPadding = 30
+        val ll = LinearLayout(context)
+        ll.orientation = LinearLayout.HORIZONTAL
+        ll.setPadding(llPadding, llPadding, llPadding, llPadding)
+        ll.gravity = Gravity.CENTER
+        var llParam = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        llParam.gravity = Gravity.CENTER
+        ll.layoutParams = llParam
+
+        val progressBar = ProgressBar(context)
+        progressBar.isIndeterminate = true
+        progressBar.setPadding(0, 0, llPadding, 0)
+        progressBar.layoutParams = llParam
+
+        llParam = LinearLayout.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        llParam.gravity = Gravity.CENTER
+        val tvText = TextView(context)
+        tvText.text = "下载APK中，请稍候..."
+        tvText.setTextColor(Color.parseColor("#000000"))
+        tvText.textSize = 14F
+        tvText.layoutParams = llParam
+
+        ll.addView(progressBar)
+        ll.addView(tvText)
+
+        val builder = AlertDialog.Builder(context)
+        builder.setCancelable(false)
+        builder.setView(ll)
+
+        val dialog = builder.create()
+        dialog.show()
+        val window = dialog.window
+        if (window != null) {
+            val layoutParams = WindowManager.LayoutParams()
+            layoutParams.copyFrom(dialog?.window?.attributes)
+            layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+            layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
+            dialog?.window?.attributes = layoutParams
+        }
+    }
+
 
     private fun requestPermission() {
         PermissionGen.with(this)
             .addRequestCode(100)
             .permissions(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE)
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
             .request()
     }
 
 
-
-    fun registerTargetReceiver(mode: Int){
-        when(mode){
+    fun registerTargetReceiver(mode: Int) {
+        when (mode) {
             PREDICT_DATA_RECEIVER -> {
                 predictDataReceiver = PredictDataReceiver()
-                registerReceiver(predictDataReceiver,
+                registerReceiver(
+                    predictDataReceiver,
                     IntentFilter("com.morningstarwang.tmdmobileng.service.SensorService.PREDICT")
-                    )
+                )
             }
             SENSOR_DATA_RECEIVER -> {
                 sensorDataReceiver = SensorDataReceiver()
@@ -106,24 +255,19 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
     }
 
 
-    fun unregisterTargetReceiver(mode: Int){
-        when(mode){
+    fun unregisterTargetReceiver(mode: Int) {
+        when (mode) {
             PREDICT_DATA_RECEIVER -> this.unregisterReceiver(predictDataReceiver)
             SENSOR_DATA_RECEIVER -> this.unregisterReceiver(sensorDataReceiver)
         }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    fun unregisterReceivers(){
+    fun unregisterReceivers() {
         e("activity-onPause", "onPause")
         unregisterTargetReceiver(PREDICT_DATA_RECEIVER)
         unregisterTargetReceiver(SENSOR_DATA_RECEIVER)
     }
-
-
-
-
-
 
 
 }

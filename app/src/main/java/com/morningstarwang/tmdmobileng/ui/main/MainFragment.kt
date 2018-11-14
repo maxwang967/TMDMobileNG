@@ -1,5 +1,7 @@
 package com.morningstarwang.tmdmobileng.ui.main
 
+import android.app.AlertDialog
+import android.content.DialogInterface
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,8 +15,10 @@ import com.morningstarwang.tmdmobileng.REAL_MODE
 import com.morningstarwang.tmdmobileng.TIMESTAMP
 import com.morningstarwang.tmdmobileng.databinding.FragmentMainBinding
 import com.morningstarwang.tmdmobileng.ui.BaseFragment
+import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.support.v4.toast
+import java.io.File
 
 class MainFragment : BaseFragment() {
 
@@ -41,6 +45,48 @@ class MainFragment : BaseFragment() {
             setRadios(REAL_MODE)
             disableRadios()
             btnModeSelect.isChecked = true
+        }
+        (currentViewModel as MainViewModel).setAnnouncementText()
+        btnReset.setOnClickListener {
+            if(btnModeSelect.isChecked || App.isCollecting || App.isPredicting){
+                toast(getString(R.string.alert_reset_before))
+                return@setOnClickListener
+            }
+            AlertDialog.Builder(context).apply {
+                setTitle(getString(R.string.tip))
+                setMessage(getString(R.string.alert_confirm_reset))
+                setPositiveButton(getString(R.string.yes)) { _, _ ->
+                    FileUtils.deleteFile("tmd_ng_cache.bin")
+                    App.currentCorrectCountVote = arrayListOf(0, 0, 0, 0, 0)
+                    App.currentAllCountVote = arrayListOf(0, 0, 0, 0, 0)
+                    for (i in 0..4) {
+                        for (j in 0..8) {
+                            for (k in 0..8) {
+                                App.currentConfusionValues[i][j][k] = 0
+                            }
+                        }
+                    }
+                    for (i in 0..4) {
+                        for (j in 0..8) {
+                            for (k in 0..8) {
+                                App.confusionValues[i][j][k] = 0
+                            }
+                        }
+                    }
+                    App.predictResult = arrayListOf("N/A", "N/A", "N/A", "N/A", "N/A")
+                    App.voteResult = arrayListOf("N/A", "N/A", "N/A", "N/A", "N/A")
+
+                    App.totalCorrectCountVote = arrayListOf(0, 0, 0, 0, 0)
+                    App.totalAllCountVote = arrayListOf(0, 0, 0, 0, 0)
+
+                    App.currentCorrectCountVote = arrayListOf(0, 0, 0, 0, 0)
+                    App.currentAllCountVote = arrayListOf(0, 0, 0, 0, 0)
+                    toast(getString(R.string.alert_reset_ok))
+                }
+                setNegativeButton(getString(R.string.no)){
+                    _, _ ->
+                }
+            }.create().show()
         }
 
         btnModeSelect.setOnCheckedChangeListener { _, isChecked ->

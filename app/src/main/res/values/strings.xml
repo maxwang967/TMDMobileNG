@@ -54,4 +54,14 @@
     <string name="alert_permission_must_be_given">App需要此权限才能正常运行。</string>
     <string name="alert_collect_first">请先开启数据采集，再进行操作。</string>
     <string name="alert_stop_predict_first">请先停止识别，再进行操作。</string>
+    <string name="ss">静止</string>
+    <string name="alert_not_support">暂不支持</string>
+    <string name="fragment_main_reset">重置识别结果</string>
+    <string name="alert_reset_before">请先取消其他操作(模式选择、数据采集和模式识别)，再尝试重置。</string>
+    <string name="tip">提示</string>
+    <string name="alert_confirm_reset">是否确认重置识别结果，这可能会初始化混淆矩阵并清空全部总体准确率。</string>
+    <string name="yes">是</string>
+    <string name="alert_reset_ok">重置成功！</string>
+    <string name="no">否</string>
+    <string name="software_update">软件更新</string>
 </resources>

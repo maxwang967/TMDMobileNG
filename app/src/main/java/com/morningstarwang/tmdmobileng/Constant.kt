@@ -2,6 +2,8 @@ package com.morningstarwang.tmdmobileng
 
 //窗口大小
 const val WINDOW_SIZE = 450
+//投票队列长度
+const val VOTE_QUEUE_LENGTH = 10
 //接口地址(列表)
 //ICT.新
 const val BASE_URL_ICT_NEW = "http://47.95.255.173:5004/"
@@ -26,6 +28,5 @@ var DETECTION_MODEL = -1
 //时间戳
 var TIMESTAMP = 0L
 
-//更新混淆矩阵
-const val UPDATE_CONFUSION_MATRIX = 0x1
-
+//更新URL
+const val UPDATE_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/update.json"

@@ -21,6 +21,16 @@
             </intent-filter>
         </activity>
         <service android:name=".service.SensorService" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.morningstarwang.tmdmobileng"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <!--元数据-->
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_path" />
+        </provider>
     </application>
 
 </manifest>

@@ -81,8 +81,10 @@ class DetectionFragment : BaseFragment() {
     private fun refreshDetectionModeUI() {
         if (DETECTION_MODEL != -1){
             detectionTabLayout.getTabAt(DETECTION_MODEL)?.select()
+            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
         }else{
             DETECTION_MODEL = detectionTabLayout.selectedTabPosition
+            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
         }
         detectionTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener{
             override fun onTabReselected(p0: TabLayout.Tab?) {
@@ -93,10 +95,10 @@ class DetectionFragment : BaseFragment() {
 
             override fun onTabSelected(p0: TabLayout.Tab?) {
                 DETECTION_MODEL = p0?.position!!
+                (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
             }
 
         })
-        (currentViewModel as DetectionViewModel).loadDataFromLocal()
     }
 
 
