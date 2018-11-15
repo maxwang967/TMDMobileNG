@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProviders
-import com.morningstarwang.tmdmobileng.App
-import com.morningstarwang.tmdmobileng.R
-import com.morningstarwang.tmdmobileng.REAL_MODE
-import com.morningstarwang.tmdmobileng.TIMESTAMP
+import com.morningstarwang.tmdmobileng.*
 import com.morningstarwang.tmdmobileng.databinding.FragmentMainBinding
 import com.morningstarwang.tmdmobileng.ui.BaseFragment
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.support.v4.toast
+import org.jetbrains.anko.uiThread
+import java.net.URL
 
 class MainFragment : BaseFragment() {
 
@@ -44,7 +44,13 @@ class MainFragment : BaseFragment() {
             disableRadios()
             btnModeSelect.isChecked = true
         }
-        (currentViewModel as MainViewModel).setAnnouncementText()
+        doAsync {
+            val url = URL(ANNOUCEMENT_URL)
+            val content = url.readText()
+            uiThread {
+                markdownView.loadMarkdown(content)
+            }
+        }
         btnReset.setOnClickListener {
             if (btnModeSelect.isChecked || App.isCollecting || App.isPredicting) {
                 toast(getString(R.string.alert_reset_before))
@@ -113,6 +119,15 @@ class MainFragment : BaseFragment() {
                 }
                 disableRadios()
             } else {
+                rbStill.isChecked = false
+                rbWalk.isChecked = false
+                rbRun.isChecked = false
+                rbBike.isChecked = false
+                rbCar.isChecked = false
+                rbBus.isChecked = false
+                rbTrain.isChecked = false
+                rbSubway.isChecked = false
+                REAL_MODE = -1
                 enableRadios()
             }
         }

@@ -155,9 +155,13 @@ class SensorService : Service() {
                 pressureList.size >= WINDOW_SIZE
             ) {
                 i("laccListContent=", laccList.toList().toString())
-                for (i in 0 until pressureList.size - WINDOW_SIZE) {
-                    pressureList.removeAt(i)
-                }
+//                for (i in 0 until pressureList.size - WINDOW_SIZE) {
+//                    pressureList.removeAt(i)
+//                }
+                pressureList =
+                        pressureList.toMutableList().slice(pressureList.size - WINDOW_SIZE until (pressureList.size))
+                            .toMutableList()
+                e("pressureList.slice.size", pressureList.size.toString())
                 val bundle = Bundle().apply {
                     putParcelableArrayList("laccList", ArrayList<Parcelable>(laccList))
                     putParcelableArrayList("accList", ArrayList<Parcelable>(accList))
@@ -244,7 +248,7 @@ class SensorService : Service() {
                 ApiUtils.predict(4, body)
             )
             calls.forEachIndexed { index, call ->
-                if ((index == 0 || index == 1) && (REAL_MODE == 0 || REAL_MODE == 1 || REAL_MODE == 2 || REAL_MODE == 3)) {
+                if ((index == 0 || index == 1) && (REAL_MODE == 2 || REAL_MODE == 3)) {
                     App.predictResult[index] = getString(R.string.alert_not_support)
                     App.voteResult[index] = getString(R.string.alert_not_support)
                     return@forEachIndexed

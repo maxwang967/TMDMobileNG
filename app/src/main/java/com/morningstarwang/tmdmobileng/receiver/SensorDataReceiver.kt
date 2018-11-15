@@ -7,6 +7,7 @@ import android.os.Environment
 import android.util.Log.e
 import com.morningstarwang.tmdmobileng.REAL_MODE
 import com.morningstarwang.tmdmobileng.TIMESTAMP
+import com.morningstarwang.tmdmobileng.WINDOW_SIZE
 import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.utils.runOnIoThread
 import java.io.File
@@ -27,7 +28,8 @@ class SensorDataReceiver : BroadcastReceiver() {
                 val gyrList: ArrayList<SensorData>? = bundle.getParcelableArrayList("gyrList")
                 val magList: ArrayList<SensorData>? = bundle.getParcelableArrayList("magList")
                 val pressureList = bundle.getFloatArray("pressureList")
-                for (i in 0 until 449) {
+                for (i in 0 until WINDOW_SIZE) {
+                    e("save-count", i.toString())
                     val laccX = laccList?.get(i)?.x
                     val laccY = laccList?.get(i)?.y
                     val laccZ = laccList?.get(i)?.z

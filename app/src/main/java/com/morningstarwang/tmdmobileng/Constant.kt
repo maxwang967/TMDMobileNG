@@ -30,3 +30,5 @@ var TIMESTAMP = 0L
 
 //更新URL
 const val UPDATE_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/update.json"
+//公告URL
+const val ANNOUCEMENT_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/announcement.md"
