@@ -65,4 +65,6 @@
     <string name="no">No</string>
     <string name="software_update">Software Updating</string>
     <string name="alert_downloading_apk">Downloading APK…</string>
+    <string name="service_title">TMDMobileNG Core Service</string>
+    <string name="service_text">Service is Running...</string>
 </resources>

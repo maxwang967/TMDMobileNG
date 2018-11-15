@@ -1,6 +1,8 @@
 package com.morningstarwang.tmdmobileng.service
 
 import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -10,13 +12,11 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_FASTEST
 import android.hardware.SensorManager.SENSOR_DELAY_GAME
-import android.os.Bundle
-import android.os.IBinder
-import android.os.Parcelable
-import android.os.PowerManager
+import android.os.*
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.util.Log.e
 import android.util.Log.i
+import androidx.core.app.NotificationCompat
 import com.google.gson.Gson
 import com.morningstarwang.tmdmobileng.*
 import com.morningstarwang.tmdmobileng.bean.CacheData
@@ -96,6 +96,23 @@ class SensorService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
+            setSmallIcon(R.mipmap.icon)
+            setContentTitle(getString(R.string.service_title))
+            setContentText(getString(R.string.service_text))
+            setTicker("TICKER")
+        }.build()
+        if (Build.VERSION.SDK_INT >= 26) {
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ID,
+                NOTIFICATION_CHANNEL_NAME,
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            channel.description = NOTIFICATION_CHANNEL_DESC
+            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+        startForeground(NOTIFICATION_ID, notification)
         return START_STICKY
     }
 
@@ -110,6 +127,7 @@ class SensorService : Service() {
             wakeLock!!.release()
             wakeLock = null
         }
+        stopForeground(true)
     }
 
 
@@ -155,9 +173,6 @@ class SensorService : Service() {
                 pressureList.size >= WINDOW_SIZE
             ) {
                 i("laccListContent=", laccList.toList().toString())
-//                for (i in 0 until pressureList.size - WINDOW_SIZE) {
-//                    pressureList.removeAt(i)
-//                }
                 pressureList =
                         pressureList.toMutableList().slice(pressureList.size - WINDOW_SIZE until (pressureList.size))
                             .toMutableList()

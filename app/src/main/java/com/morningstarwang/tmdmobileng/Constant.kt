@@ -32,3 +32,9 @@ var TIMESTAMP = 0L
 const val UPDATE_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/update.json"
 //公告URL
 const val ANNOUCEMENT_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/announcement.md"
+
+const val NOTIFICATION_CHANNEL_ID = "5000"
+const val NOTIFICATION_CHANNEL_NAME = "TMD_MOBILE_NG"
+const val NOTIFICATION_CHANNEL_DESC = "此服务是交通模式识别NG的核心识别服务"
+const val NOTIFICATION_ID = 5001
+

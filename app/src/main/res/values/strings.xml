@@ -65,4 +65,6 @@
     <string name="no">否</string>
     <string name="software_update">软件更新</string>
     <string name="alert_downloading_apk">下载APK中，请稍候…</string>
+    <string name="service_title">交通模式识别NG核心服务</string>
+    <string name="service_text">正在运行…</string>
 </resources>
