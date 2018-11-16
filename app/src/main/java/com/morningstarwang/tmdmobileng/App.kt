@@ -1,6 +1,7 @@
 package com.morningstarwang.tmdmobileng
 
 import android.app.Application
+import com.tencent.bugly.crashreport.CrashReport
 
 open class App : Application() {
     companion object {
@@ -48,5 +49,10 @@ open class App : Application() {
                 }
             }
         }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+        CrashReport.initCrashReport(applicationContext, "a46118cfab", true)
     }
 }
