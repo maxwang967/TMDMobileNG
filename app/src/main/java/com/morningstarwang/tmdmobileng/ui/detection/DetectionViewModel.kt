@@ -117,7 +117,7 @@ class DetectionViewModel(application: Application) : AndroidViewModel(applicatio
             voteCurrentAccuracy = (App.currentCorrectCountVote[model] * 100 / App.currentAllCountVote[model]).toFloat()
         }
         if (App.totalCorrectCountVote[model] != 0) {
-            voteTotalAccuracy = (App.totalCorrectCountVote[model] * 100 / App.totalCorrectCountVote[model]).toFloat()
+            voteTotalAccuracy = (App.totalCorrectCountVote[model] * 100 / App.totalAllCountVote[model]).toFloat()
         }
         this.voteCurrentAccuracy.postValue(String.format("%.2f", voteCurrentAccuracy) + "%")
         this.voteTotalAccuracy.postValue(String.format("%.2f", voteTotalAccuracy) + "%")
