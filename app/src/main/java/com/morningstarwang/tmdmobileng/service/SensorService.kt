@@ -26,6 +26,7 @@ import com.morningstarwang.tmdmobileng.utils.ApiUtils
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import okhttp3.ResponseBody
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.toast
 import retrofit2.Call
 import retrofit2.Response
 import java.util.*
@@ -288,6 +289,10 @@ class SensorService : Service() {
                             else -> {
                                 -1
                             }
+                        }
+                        if (predictMode == -1) {
+                            toast(getString(R.string.alert_network_error))
+                            return
                         }
                         val predictResult = when (result) {
                             "Still" -> getString(R.string.fragment_radio_still)

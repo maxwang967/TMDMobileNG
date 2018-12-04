@@ -18,8 +18,8 @@
     <string name="fragment_radio_bus">公交车</string>
     <string name="fragment_radio_train">火车</string>
     <string name="fragment_radio_subway">地铁</string>
-    <string name="fragment_detection_tabitem_ict_new">ICT(新)</string>
-    <string name="fragment_detection_tabitem_ict_old">ICT(旧)</string>
+    <string name="fragment_detection_tabitem_ict_new">有地磁</string>
+    <string name="fragment_detection_tabitem_ict_old">无地磁</string>
     <string name="fragment_detection_tabitem_htc">HTC</string>
     <string name="fragment_detection_tabitem_hwa">华为A</string>
     <string name="fragment_detection_tabitem_hwb">华为B</string>
@@ -67,4 +67,5 @@
     <string name="alert_downloading_apk">下载APK中，请稍候…</string>
     <string name="service_title">交通模式识别NG核心服务</string>
     <string name="service_text">正在运行…</string>
+    <string name="alert_network_error">网络异常，请稍候重试。</string>
 </resources>

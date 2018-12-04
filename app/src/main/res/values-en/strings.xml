@@ -18,8 +18,8 @@
     <string name="fragment_radio_bus">Bus</string>
     <string name="fragment_radio_train">Train</string>
     <string name="fragment_radio_subway">Subway</string>
-    <string name="fragment_detection_tabitem_ict_new">ICT(New)</string>
-    <string name="fragment_detection_tabitem_ict_old">ICT(Old)</string>
+    <string name="fragment_detection_tabitem_ict_new">mag</string>
+    <string name="fragment_detection_tabitem_ict_old">no_mag</string>
     <string name="fragment_detection_tabitem_htc">HTC</string>
     <string name="fragment_detection_tabitem_hwa">HuaweiA</string>
     <string name="fragment_detection_tabitem_hwb">HuaweiB</string>
@@ -66,5 +66,6 @@
     <string name="software_update">Software Updating</string>
     <string name="alert_downloading_apk">Downloading APK…</string>
     <string name="service_title">TMDMobileNG Core Service</string>
-    <string name="service_text">Service is Running...</string>
+    <string name="service_text">Service is Running…</string>
+    <string name="alert_network_error">Network Error.</string>
 </resources>
