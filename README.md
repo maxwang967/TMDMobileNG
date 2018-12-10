@@ -1,6 +1,11 @@
 # TMDMobileNG
 语言支持：简体中文，英文
+
 Language Support: Simplified Chinese, English
+## Branches
+Stable Branch: master
+
+**Feature Branch: online-learning <- Default**
 ## Introduction
 TMDMobileNG是C/S系统中的客户端部分。它不仅是一个传感器数据采集器也是一个基于AI的人工智能交通模式识别器。模型在服务器端持续进行更新。App主要用于科研用途。我们非常欢迎你提供对于我们程序的建议或者识别方式的建议。
 TMDMobileNG is the client side of C/S system. It's both a sensor collector and an AI transportation mode detector. The model is being updated on the server side. And this application is mostly for research use. It will be great if you provide your suggestions about our Application or the detection way itself.
