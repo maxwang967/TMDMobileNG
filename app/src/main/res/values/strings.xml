@@ -68,4 +68,6 @@
     <string name="service_title">交通模式识别NG核心服务</string>
     <string name="service_text">正在运行…</string>
     <string name="alert_network_error">网络异常，请稍候重试。</string>
+    <string name="fragment_collect_accler">踩油门</string>
+    <string name="fragment_collect_brake">踩刹车</string>
 </resources>

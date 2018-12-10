@@ -6,6 +6,13 @@ import com.tencent.bugly.crashreport.CrashReport
 open class App : Application() {
     companion object {
 
+        /**
+         * -1 代表 无
+         * 0 代表 油门
+         * 1 代表 刹车
+         */
+        var peakFlag = -1
+
         var isCollecting = false
         var isPredicting = false
         var confusionValues = arrayListOf(

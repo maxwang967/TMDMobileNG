@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Environment
 import android.util.Log.e
+import com.morningstarwang.tmdmobileng.App
 import com.morningstarwang.tmdmobileng.REAL_MODE
 import com.morningstarwang.tmdmobileng.TIMESTAMP
 import com.morningstarwang.tmdmobileng.WINDOW_SIZE
@@ -49,7 +50,10 @@ class SensorDataReceiver : BroadcastReceiver() {
                     val pressure = pressureList?.get(i)
 
                     val content =
-                        "$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1}\n"
+                        "$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1},${App.peakFlag}\n"
+                    if (App.peakFlag != -1) {
+                        App.peakFlag = -1
+                    }
                     var modeName = ""
                     when (REAL_MODE) {
                         0 -> modeName = "Still"
@@ -66,7 +70,7 @@ class SensorDataReceiver : BroadcastReceiver() {
                     if (!directory.exists()) {
                         directory.mkdir()
                     }
-                    val saveFile = File(path, "$modeName-$TIMESTAMP-NG.csv")
+                    val saveFile = File(path, "$modeName-$TIMESTAMP-NG-withPeak.csv")
                     saveFile.appendText(content)
 
                 }
