@@ -2,7 +2,7 @@ package com.morningstarwang.tmdmobileng.utils
 
 import android.util.Log.e
 import com.morningstarwang.tmdmobileng.*
-import com.morningstarwang.tmdmobileng.api.PredictApi
+import com.morningstarwang.tmdmobileng.api.Api
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -26,15 +26,18 @@ object ApiUtils {
     private var retrofitHuaweiB: Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL_HWB)
         .build()
+    private var retrofitDjango: Retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL_DJANGO)
+        .build()
 
     fun predict(model: Int, bodyContent: String): Call<ResponseBody>? {
         e("predict.Thread", Thread.currentThread().name)
         val service = when (model) {
-            0 -> retrofitICTNew.create(PredictApi::class.java)
-            1 -> retrofitICTOld.create(PredictApi::class.java)
-            2 -> retrofitHTC.create(PredictApi::class.java)
-            3 -> retrofitHuaweiA.create(PredictApi::class.java)
-            4 -> retrofitHuaweiB.create(PredictApi::class.java)
+            0 -> retrofitICTNew.create(Api::class.java)
+            1 -> retrofitICTOld.create(Api::class.java)
+            2 -> retrofitHTC.create(Api::class.java)
+            3 -> retrofitHuaweiA.create(Api::class.java)
+            4 -> retrofitHuaweiB.create(Api::class.java)
             else -> {
                 null
             }
@@ -50,6 +53,13 @@ object ApiUtils {
                 null
             }
         }
+    }
+
+    fun login(username: String, password: String): Call<ResponseBody>? {
+        val service = retrofitDjango.create(Api::class.java)
+        val body =
+            RequestBody.create(MediaType.parse("application/json"), "{\"username\":$username, \"password\": $password}")
+        return service.login(body)
     }
 
 }

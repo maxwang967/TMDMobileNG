@@ -6,7 +6,7 @@ import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface PredictApi {
+interface Api {
     @POST("get_4nl_mode")
     fun predictICTNew(@Body postData: RequestBody): Call<ResponseBody>
 
@@ -22,4 +22,10 @@ interface PredictApi {
 
     @POST("get_8_mode_pf")
     fun predictHuaweiB(@Body postData: RequestBody): Call<ResponseBody>
+
+    @POST("api-auth")
+    fun login(@Body userInfo: RequestBody): Call<ResponseBody>
+
+    @POST("reg")
+    fun register(@Body userInfo: RequestBody): Call<ResponseBody>
 }

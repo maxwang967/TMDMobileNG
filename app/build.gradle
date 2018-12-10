@@ -41,6 +41,8 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0-alpha'
     implementation 'us.feras.mdv:markdownview:1.1.0'
     implementation 'com.tencent.bugly:crashreport:2.6.6.1'
+    implementation 'com.afollestad.material-dialogs:core:2.0.0-rc3'
+
 
     //Anko
     implementation "org.jetbrains.anko:anko:$anko_version"

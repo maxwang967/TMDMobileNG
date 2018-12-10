@@ -13,9 +13,7 @@ import android.util.Log.e
 import android.view.Gravity
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.pm.PackageInfoCompat
@@ -28,6 +26,9 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.navigation.Navigation
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.gson.Gson
 import com.morningstarwang.tmdmobileng.bean.CacheData
 import com.morningstarwang.tmdmobileng.bean.UpdateData
@@ -155,7 +156,71 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                         setCancelable(false)
                     }.create().show()
                 }
+            } else {
+                //登录
+                activityUiThreadWithContext {
+                    showLoginDialog()
+                }
             }
+        }
+    }
+
+    private fun Context.showLoginDialog() {
+        val context = this
+        val sp = this.getSharedPreferences("LOGIN", Context.MODE_PRIVATE)
+        val username = sp.getString("username", "")
+        val password = sp.getString("password", "")
+        val loginDialog = MaterialDialog(this).show {
+            cancelable(false)
+            title(R.string.login_title)
+            customView(R.layout.dialog_login)
+            positiveButton(R.string.button_login_ok) { dialog ->
+                val customView = dialog.getCustomView() ?: return@positiveButton
+                val edtUsername = customView.findViewById<EditText>(R.id.edtUsername)
+                val edtPassword = customView.findViewById<EditText>(R.id.edtPassword)
+                val cbRememberMe = customView.findViewById<CheckBox>(R.id.cbRememberMe)
+                //TODO 登录请求
+
+                if (cbRememberMe.isChecked) {
+                    val editor = getSharedPreferences("LOGIN", Context.MODE_PRIVATE).edit()
+                    editor.putString("username", edtUsername.text.toString())
+                    editor.putString("password", edtPassword.text.toString())
+                    editor.apply()
+                }
+                toast(edtUsername.text)
+                toast(edtPassword.text)
+            }
+            negativeButton(R.string.button_login_reg) {
+                val dialog = MaterialDialog(context).show {
+                    cancelable(false)
+                    title(R.string.reg_title)
+                    customView(R.layout.dialog_reg)
+                    positiveButton(R.string.button_reg_ok) { dialog ->
+                        val customView = dialog.getCustomView() ?: return@positiveButton
+                        val edtRegUsername = customView.findViewById<EditText>(R.id.edtRegUsername)
+                        val edtRegPassword = customView.findViewById<EditText>(R.id.edtRegPassword)
+                        val edtRegPasswordRepeat = customView.findViewById<EditText>(R.id.edtRegPasswordRepeat)
+                        if (edtRegUsername.text.toString() == "" ||
+                            edtRegPassword.text.toString() == ""
+                        ) {
+                            toast(getString(R.string.alert_username_null))
+                            return@positiveButton
+                        }
+                        if (edtRegPassword.text.toString() == edtRegPasswordRepeat.text.toString()) {
+                            //TODO 注册请求
+
+                        } else {
+                            toast(getString(R.string.alert_password_repeat_error))
+                            return@positiveButton
+                        }
+                    }
+                }
+            }
+            val customView = this.getCustomView() ?: return
+            val edtUsername = customView.findViewById<EditText>(R.id.edtUsername)
+            val edtPassword = customView.findViewById<EditText>(R.id.edtPassword)
+            edtUsername.setText(username)
+            edtPassword.setText(password)
         }
     }
 
