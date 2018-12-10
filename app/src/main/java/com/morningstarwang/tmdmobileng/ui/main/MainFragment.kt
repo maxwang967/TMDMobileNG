@@ -33,7 +33,6 @@ class MainFragment : BaseFragment() {
             setLifecycleOwner(this@MainFragment)
             lifecycle.addObserver(viewModel as LifecycleObserver)
         }
-
         return binding.root
     }
 
