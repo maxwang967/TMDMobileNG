@@ -20,6 +20,7 @@ import java.net.URL
 
 class MainFragment : BaseFragment() {
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -130,6 +131,7 @@ class MainFragment : BaseFragment() {
                 enableRadios()
             }
         }
+
     }
 
     private fun checkIfAtLeastOneRadioChecked(): Boolean {

@@ -47,6 +47,22 @@ class CollectFragment : BaseFragment() {
         if (App.isCollecting) {
             btnCollect.isChecked = true
         }
+
+        btnAcc.setOnClickListener {
+            if (App.isCollecting) {
+                App.peakFlag = 0
+            } else {
+                toast(getString(R.string.alert_collect_first))
+            }
+        }
+        btnBrake.setOnClickListener {
+            if (App.isCollecting) {
+                App.peakFlag = 1
+            } else {
+                toast(getString(R.string.alert_collect_first))
+            }
+        }
+
         btnCollect.setOnCheckedChangeListener { _, isChecked ->
             if (REAL_MODE == -1) {
                 toast(getString(R.string.alert_select_mode_first))

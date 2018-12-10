@@ -68,4 +68,6 @@
     <string name="service_title">TMDMobileNG Core Service</string>
     <string name="service_text">Service is Running…</string>
     <string name="alert_network_error">Network Error.</string>
+    <string name="fragment_collect_accler">Hit the gas</string>
+    <string name="fragment_collect_brake">Brake</string>
 </resources>
