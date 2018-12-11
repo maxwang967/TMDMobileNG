@@ -70,4 +70,15 @@
     <string name="alert_network_error">Network Error.</string>
     <string name="fragment_collect_accler">Hit the gas</string>
     <string name="fragment_collect_brake">Brake</string>
+    <string name="dialog_username">Username</string>
+    <string name="dialog_remember_me">Remember Me</string>
+    <string name="dialog_password">Password</string>
+    <string name="login_title">Sign In</string>
+    <string name="button_login_ok">Confirm</string>
+    <string name="button_login_reg">No account yet?</string>
+    <string name="dialog_password_repeat">Password Again</string>
+    <string name="reg_title">Sign up</string>
+    <string name="button_reg_ok">Confirm</string>
+    <string name="alert_password_repeat_error">Incorrect password, please try again.</string>
+    <string name="alert_username_null">Empty Username or password, please try again.</string>
 </resources>

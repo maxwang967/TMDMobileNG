@@ -57,9 +57,18 @@ object ApiUtils {
 
     fun login(username: String, password: String): Call<ResponseBody>? {
         val service = retrofitDjango.create(Api::class.java)
+        val loginJson = "{\"username\":\"$username\", \"password\": \"$password\"}"
         val body =
-            RequestBody.create(MediaType.parse("application/json"), "{\"username\":$username, \"password\": $password}")
+            RequestBody.create(MediaType.parse("application/json"), loginJson)
         return service.login(body)
+    }
+
+    fun reg(username: String, password: String): Call<ResponseBody>? {
+        val service = retrofitDjango.create(Api::class.java)
+        val loginJson = "{\"username\":\"$username\", \"password\": \"$password\"}"
+        val body =
+            RequestBody.create(MediaType.parse("application/json"), loginJson)
+        return service.register(body)
     }
 
 }

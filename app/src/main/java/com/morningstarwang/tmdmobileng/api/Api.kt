@@ -23,9 +23,9 @@ interface Api {
     @POST("get_8_mode_pf")
     fun predictHuaweiB(@Body postData: RequestBody): Call<ResponseBody>
 
-    @POST("api-auth")
+    @POST("api-auth/")
     fun login(@Body userInfo: RequestBody): Call<ResponseBody>
 
-    @POST("reg")
+    @POST("reg/")
     fun register(@Body userInfo: RequestBody): Call<ResponseBody>
 }

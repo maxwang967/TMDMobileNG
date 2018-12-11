@@ -31,18 +31,25 @@ import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
 import com.google.gson.Gson
 import com.morningstarwang.tmdmobileng.bean.CacheData
+import com.morningstarwang.tmdmobileng.bean.Token
 import com.morningstarwang.tmdmobileng.bean.UpdateData
+import com.morningstarwang.tmdmobileng.bean.User
 import com.morningstarwang.tmdmobileng.databinding.ActivityMainBinding
 import com.morningstarwang.tmdmobileng.receiver.DownloadReceiver
 import com.morningstarwang.tmdmobileng.receiver.SensorDataReceiver
 import com.morningstarwang.tmdmobileng.service.SensorService
+import com.morningstarwang.tmdmobileng.utils.ApiUtils
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kr.co.namee.permissiongen.PermissionFail
 import kr.co.namee.permissiongen.PermissionGen
 import kr.co.namee.permissiongen.PermissionSuccess
+import okhttp3.ResponseBody
 import org.jetbrains.anko.activityUiThreadWithContext
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 import java.net.URL
 
@@ -50,6 +57,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var sensorDataReceiver: SensorDataReceiver
+    private lateinit var ivHeader: ImageView
+    private lateinit var tvHeader: TextView
 
     private inline fun <reified T : Any> fromJson(json: String): T {
         return Gson().fromJson(json, T::class.java)
@@ -66,6 +75,9 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         //添加以支持侧边栏项目响应事件
         binding.navigationView.setupWithNavController(navController)
+        val headerView = binding.navigationView.getHeaderView(0)
+        ivHeader = headerView.findViewById<ImageView>(R.id.ivHeader)
+        tvHeader = headerView.findViewById<TextView>(R.id.tvHeader)
         requestPermission()
         registerReceiver(
             DownloadReceiver(),
@@ -179,48 +191,125 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                 val edtUsername = customView.findViewById<EditText>(R.id.edtUsername)
                 val edtPassword = customView.findViewById<EditText>(R.id.edtPassword)
                 val cbRememberMe = customView.findViewById<CheckBox>(R.id.cbRememberMe)
-                //TODO 登录请求
+                //登录
+                if (edtUsername.text.toString() != "" && edtPassword.text.toString() != "") {
+                    ApiUtils.login(edtUsername.text.toString(), edtPassword.text.toString())
+                        ?.enqueue(object : retrofit2.Callback<ResponseBody> {
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                toast("网络连接错误，原因是：" + t.message)
+                                showLoginDialog()
+                                return
+                            }
 
+                            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                                if (response.body() == null) {
+                                    //登录失败
+                                    toast("用户名或密码错误，请重试。")
+                                    edtUsername.text.clear()
+                                    edtPassword.text.clear()
+                                    showLoginDialog()
+                                    return
+                                } else {
+                                    //登录成功
+                                    val tokenJson = response.body()?.string().toString()
+                                    val gson = Gson()
+                                    val token = gson.fromJson(tokenJson, Token::class.java)
+                                    e("login_token", token.token)
+                                    val editor = getSharedPreferences("AFTER_LOGIN", Context.MODE_PRIVATE).edit()
+                                    editor.putString("token", token.token)
+                                    editor.putString("username", edtUsername.text.toString())
+                                    editor.commit()
+                                    ivHeader.setImageDrawable(getDrawable(R.mipmap.login))
+                                    tvHeader.text = "你好，${edtUsername.text.toString()}!"
+                                    toast("登录成功！")
+                                }
+
+                            }
+
+                        })
+                } else {
+                    toast("用户名或密码为空。")
+                    showLoginDialog()
+                    return@positiveButton
+                }
                 if (cbRememberMe.isChecked) {
                     val editor = getSharedPreferences("LOGIN", Context.MODE_PRIVATE).edit()
                     editor.putString("username", edtUsername.text.toString())
                     editor.putString("password", edtPassword.text.toString())
                     editor.apply()
                 }
-                toast(edtUsername.text)
-                toast(edtPassword.text)
             }
+            //注册
             negativeButton(R.string.button_login_reg) {
-                val dialog = MaterialDialog(context).show {
-                    cancelable(false)
-                    title(R.string.reg_title)
-                    customView(R.layout.dialog_reg)
-                    positiveButton(R.string.button_reg_ok) { dialog ->
-                        val customView = dialog.getCustomView() ?: return@positiveButton
-                        val edtRegUsername = customView.findViewById<EditText>(R.id.edtRegUsername)
-                        val edtRegPassword = customView.findViewById<EditText>(R.id.edtRegPassword)
-                        val edtRegPasswordRepeat = customView.findViewById<EditText>(R.id.edtRegPasswordRepeat)
-                        if (edtRegUsername.text.toString() == "" ||
-                            edtRegPassword.text.toString() == ""
-                        ) {
-                            toast(getString(R.string.alert_username_null))
-                            return@positiveButton
-                        }
-                        if (edtRegPassword.text.toString() == edtRegPasswordRepeat.text.toString()) {
-                            //TODO 注册请求
-
-                        } else {
-                            toast(getString(R.string.alert_password_repeat_error))
-                            return@positiveButton
-                        }
-                    }
-                }
+                showRegDialog(context)
             }
             val customView = this.getCustomView() ?: return
             val edtUsername = customView.findViewById<EditText>(R.id.edtUsername)
             val edtPassword = customView.findViewById<EditText>(R.id.edtPassword)
+            val cbRememberMe = customView.findViewById<CheckBox>(R.id.cbRememberMe)
+            if (username != "") {
+                cbRememberMe.isChecked = true
+            }
             edtUsername.setText(username)
             edtPassword.setText(password)
+        }
+    }
+
+    private fun showRegDialog(context: Context) {
+        val dialog = MaterialDialog(context).show {
+            cancelable(false)
+            title(R.string.reg_title)
+            customView(R.layout.dialog_reg)
+            positiveButton(R.string.button_reg_ok) { dialog ->
+                val customView = dialog.getCustomView() ?: return@positiveButton
+                val edtRegUsername = customView.findViewById<EditText>(R.id.edtRegUsername)
+                val edtRegPassword = customView.findViewById<EditText>(R.id.edtRegPassword)
+                val edtRegPasswordRepeat = customView.findViewById<EditText>(R.id.edtRegPasswordRepeat)
+                if (edtRegUsername.text.toString() == "" ||
+                    edtRegPassword.text.toString() == ""
+                ) {
+                    toast(getString(R.string.alert_username_null))
+                    showRegDialog(context)
+                    return@positiveButton
+                }
+                if (edtRegPassword.text.toString() == edtRegPasswordRepeat.text.toString()) {
+                    //注册
+                    ApiUtils.reg(edtRegUsername.text.toString(), edtRegPassword.text.toString())
+                        ?.enqueue(object : Callback<ResponseBody> {
+                            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                                toast("网络连接错误，原因是：" + t.message)
+                                showRegDialog(context)
+                                return
+                            }
+
+                            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                                if (response.body() == null) {
+                                    toast("注册失败，请检查用户名和密码拼写是否正确。")
+                                    showRegDialog(context)
+                                    return
+                                }
+                                val userJson = response.body()?.string().toString()
+                                val gson = Gson()
+                                val user = gson.fromJson(userJson, User::class.java)
+                                if (user.username == "nan" && user.password == "nan") {
+                                    toast("用户名不合法或已存在，请重新输入填写注册信息。")
+                                    showRegDialog(context)
+                                    return
+                                } else {
+                                    toast("注册成功，请登录。")
+                                    showLoginDialog()
+                                    return
+                                }
+                            }
+                        })
+                } else {
+                    toast(getString(R.string.alert_password_repeat_error))
+                    return@positiveButton
+                }
+            }
+            negativeButton(R.string.button_reg_login) { dialog ->
+                showLoginDialog()
+            }
         }
     }
 

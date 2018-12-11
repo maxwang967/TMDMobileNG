@@ -2,7 +2,7 @@
     <string name="app_name">交通模式识别NG</string>
 
     <string name="navigation_drawer_header_content_description">交通模式识别Next Generation</string>
-    <string name="navigation_drawer_header_title">交通模式识别Next Generation</string>
+    <string name="navigation_drawer_header_title">未登录</string>
     <string name="fragment_label_collect">数据采集</string>
     <string name="fragment_label_main">主页</string>
     <string name="fragment_label_detection">模式识别</string>
@@ -71,7 +71,6 @@
     <string name="fragment_collect_accler">踩油门</string>
     <string name="fragment_collect_brake">踩刹车</string>
     <string name="dialog_username">用户名</string>
-    <string name="dialog_username_hint">请输入用户名</string>
     <string name="dialog_remember_me">记住我</string>
     <string name="dialog_password">密码</string>
     <string name="login_title">用户登录</string>
@@ -82,4 +81,5 @@
     <string name="button_reg_ok">注册</string>
     <string name="alert_password_repeat_error">两次密码输入不一致，请重新输入。</string>
     <string name="alert_username_null">用户名和密码不能为空！</string>
+    <string name="button_reg_login">返回登录</string>
 </resources>
