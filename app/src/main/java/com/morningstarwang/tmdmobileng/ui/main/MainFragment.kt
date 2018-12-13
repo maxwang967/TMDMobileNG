@@ -13,7 +13,8 @@ import com.morningstarwang.tmdmobileng.databinding.FragmentMainBinding
 import com.morningstarwang.tmdmobileng.ui.BaseFragment
 import com.morningstarwang.tmdmobileng.utils.FileUtils
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.doAsyncResult
+import org.jetbrains.anko.onComplete
 import org.jetbrains.anko.support.v4.toast
 import org.jetbrains.anko.uiThread
 import java.net.URL
@@ -44,11 +45,13 @@ class MainFragment : BaseFragment() {
             disableRadios()
             btnModeSelect.isChecked = true
         }
-        doAsync {
+        doAsyncResult {
             val url = URL(ANNOUCEMENT_URL)
             val content = url.readText()
-            uiThread {
-                markdownView.loadMarkdown(content)
+            onComplete {
+                uiThread {
+                    markdownView.loadMarkdown(content)
+                }
             }
         }
         btnReset.setOnClickListener {

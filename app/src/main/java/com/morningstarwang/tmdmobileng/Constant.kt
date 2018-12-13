@@ -16,7 +16,7 @@ const val BASE_URL_HWA = "http://47.95.255.173:5000/"
 //HWB
 const val BASE_URL_HWB = "http://47.95.255.173:5003/"
 //DJANGO
-const val BASE_URL_DJANGO = "http://101.200.54.20:8000/tmd-v1/"
+const val BASE_URL_DJANGO = "http://47.95.255.173:8000/tmd-v1/"
 
 //PredictDataReceiver
 const val PREDICT_DATA_RECEIVER = 0x1

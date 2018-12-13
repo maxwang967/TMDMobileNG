@@ -12,6 +12,8 @@ open class App : Application() {
          * 1 代表 刹车
          */
         var peakFlag = -1
+        var isLogin = false
+        var isUpdateChecked = false
 
         var isCollecting = false
         var isPredicting = false

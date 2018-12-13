@@ -47,6 +47,7 @@ import okhttp3.ResponseBody
 import org.jetbrains.anko.activityUiThreadWithContext
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.toast
+import org.jetbrains.anko.uiThread
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -76,8 +77,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
         //添加以支持侧边栏项目响应事件
         binding.navigationView.setupWithNavController(navController)
         val headerView = binding.navigationView.getHeaderView(0)
-        ivHeader = headerView.findViewById<ImageView>(R.id.ivHeader)
-        tvHeader = headerView.findViewById<TextView>(R.id.tvHeader)
+        ivHeader = headerView.findViewById(R.id.ivHeader)
+        tvHeader = headerView.findViewById(R.id.tvHeader)
         requestPermission()
         registerReceiver(
             DownloadReceiver(),
@@ -139,18 +140,25 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                 apkFile.delete()
             }
             val url = URL(UPDATE_URL)
-            val updateInfo = try {
+            val updateInfo: UpdateData?
+            try {
                 val content = url.readText()
                 e("content", content)
                 val updateData: UpdateData = fromJson(content)
                 e("updateData=", updateData.toString())
-                updateData
+                updateInfo = updateData
             } catch (e: Exception) {
-                null
+                Thread.sleep(5000)
+                uiThread {
+                    toast("网络异常，原因是：${e.message}")
+                }
+                checkForUpdate()
+                return@doAsync
             }
             val packageInfo = packageManager.getPackageInfo(packageName, 0)
             e("versionCode", PackageInfoCompat.getLongVersionCode(packageInfo).toString())
             val versionCode = PackageInfoCompat.getLongVersionCode(packageInfo)
+
             if (versionCode < updateInfo?.versionCode!!.toLong()) {
                 e("update", "has new version")
                 activityUiThreadWithContext {
@@ -222,6 +230,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                                     ivHeader.setImageDrawable(getDrawable(R.mipmap.login))
                                     tvHeader.text = "你好，${edtUsername.text.toString()}!"
                                     toast("登录成功！")
+                                    App.isLogin = true
                                 }
 
                             }
