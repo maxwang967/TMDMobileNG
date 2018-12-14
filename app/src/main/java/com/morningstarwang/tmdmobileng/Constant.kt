@@ -13,8 +13,8 @@ const val BASE_URL_ICT_OLD = "http://47.95.255.173:5001/"
 const val BASE_URL_HTC = "http://47.95.255.173:5005/"
 //HWA
 const val BASE_URL_HWA = "http://47.95.255.173:5000/"
-//HWB
-const val BASE_URL_HWB = "http://47.95.255.173:5003/"
+//TODO Change HWB to online learning
+const val BASE_URL_HWB = "http://47.95.255.173:8000/tmd-v1/"
 //DJANGO
 const val BASE_URL_DJANGO = "http://47.95.255.173:8000/tmd-v1/"
 

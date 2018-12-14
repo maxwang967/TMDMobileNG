@@ -22,7 +22,7 @@
     <string name="fragment_detection_tabitem_ict_old">无地磁</string>
     <string name="fragment_detection_tabitem_htc">HTC</string>
     <string name="fragment_detection_tabitem_hwa">华为A</string>
-    <string name="fragment_detection_tabitem_hwb">华为B</string>
+    <string name="fragment_detection_tabitem_hwb">在线</string>
     <string name="fragment_detection_confusion_matrix">混淆矩阵</string>
     <string name="fragment_detection_result_field">结果</string>
     <string name="fragment_detection_accuracy_field">准确率</string>
@@ -82,4 +82,5 @@
     <string name="alert_password_repeat_error">两次密码输入不一致，请重新输入。</string>
     <string name="alert_username_null">用户名和密码不能为空！</string>
     <string name="button_reg_login">返回登录</string>
+    <string name="online_not_ready">学习中</string>
 </resources>

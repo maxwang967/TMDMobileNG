@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                 updateInfo = updateData
             } catch (e: Exception) {
                 Thread.sleep(5000)
+                e("network error:", e.message)
                 uiThread {
                     toast("网络异常，原因是：${e.message}")
                 }
@@ -226,6 +227,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                                     val editor = getSharedPreferences("AFTER_LOGIN", Context.MODE_PRIVATE).edit()
                                     editor.putString("token", token.token)
                                     editor.putString("username", edtUsername.text.toString())
+                                    App.token = token.token
                                     editor.commit()
                                     ivHeader.setImageDrawable(getDrawable(R.mipmap.login))
                                     tvHeader.text = "你好，${edtUsername.text.toString()}!"

@@ -22,7 +22,7 @@
     <string name="fragment_detection_tabitem_ict_old">no_mag</string>
     <string name="fragment_detection_tabitem_htc">HTC</string>
     <string name="fragment_detection_tabitem_hwa">HuaweiA</string>
-    <string name="fragment_detection_tabitem_hwb">HuaweiB</string>
+    <string name="fragment_detection_tabitem_hwb">Online</string>
     <string name="fragment_detection_confusion_matrix">Confusion Matrix</string>
     <string name="fragment_detection_result_field">Result</string>
     <string name="fragment_detection_accuracy_field">Accuracy</string>
@@ -81,4 +81,6 @@
     <string name="button_reg_ok">Confirm</string>
     <string name="alert_password_repeat_error">Incorrect password, please try again.</string>
     <string name="alert_username_null">Empty Username or password, please try again.</string>
+    <string name="button_reg_login">BACK</string>
+    <string name="online_not_ready">Learning</string>
 </resources>

@@ -20,29 +20,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/detectionTabItemICTNew"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_detection_tabitem_ict_new" />
+        <!--<com.google.android.material.tabs.TabItem-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/detectionTabItemICTNew"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/fragment_detection_tabitem_ict_new" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/detectionTabItemICTOld"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_detection_tabitem_ict_old" />
+        <!--<com.google.android.material.tabs.TabItem-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/detectionTabItemICTOld"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/fragment_detection_tabitem_ict_old" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/detectionTabItemHTC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_detection_tabitem_htc" />
+        <!--<com.google.android.material.tabs.TabItem-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/detectionTabItemHTC"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/fragment_detection_tabitem_htc" />-->
 
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/detectionTabItemHWA"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/fragment_detection_tabitem_hwa" />
+        <!--<com.google.android.material.tabs.TabItem-->
+        <!--android:visibility="gone"-->
+        <!--android:id="@+id/detectionTabItemHWA"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="@string/fragment_detection_tabitem_hwa" />-->
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/detectionTabItemHWB"

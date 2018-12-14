@@ -21,6 +21,7 @@ import com.google.gson.Gson
 import com.morningstarwang.tmdmobileng.*
 import com.morningstarwang.tmdmobileng.bean.CacheData
 import com.morningstarwang.tmdmobileng.bean.PostData
+import com.morningstarwang.tmdmobileng.bean.Result
 import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.utils.ApiUtils
 import com.morningstarwang.tmdmobileng.utils.FileUtils
@@ -246,7 +247,8 @@ class SensorService : Service() {
             e("magList", magList?.size.toString())
             e("laccList", laccList?.size.toString())
             e("pressureList", pressureList.size.toString())
-            val postData = PostData(laccList, accList, gyrList, magList, pressureList)
+            val label = REAL_MODE
+            val postData = PostData(laccList, accList, gyrList, magList, pressureList, label)
             val body = Gson().toJson(postData)
             makeCallsForPredict(body)
         }
@@ -264,7 +266,10 @@ class SensorService : Service() {
                 ApiUtils.predict(4, body)
             )
             calls.forEachIndexed { index, call ->
-                if ((index == 0 || index == 1) && (REAL_MODE == 2 || REAL_MODE == 3)) {
+                if (index == 0 || index == 1 || index == 2 || index == 3) {
+                    return@forEachIndexed
+                }
+                if ((index == 0 || index == 1 || index == 4) && (REAL_MODE == 2 || REAL_MODE == 3)) {
                     App.predictResult[index] = getString(R.string.alert_not_support)
                     App.voteResult[index] = getString(R.string.alert_not_support)
                     return@forEachIndexed
@@ -275,8 +280,14 @@ class SensorService : Service() {
 
                     override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                         e("DETECTION_MODEL", index.toString())
-//                        e("predict result:" ,response.body()?.string().toString())
-                        val result = response.body()?.string().toString()
+//                        e("predict result:", response.body()?.string().toString())
+                        var result = response.body()?.string().toString()
+                        val gson = Gson()
+                        if (result.contains("{")) {
+                            val resultObject = gson.fromJson(result, Result::class.java)
+                            result = resultObject.result
+                            e("online-learning-not-null", result)
+                        }
                         val predictMode = when (result) {
                             "Still" -> 0
                             "Walk" -> 1
@@ -286,12 +297,17 @@ class SensorService : Service() {
                             "Bus" -> 5
                             "Train" -> 6
                             "Subway" -> 7
+                            "not ready" -> -2
                             else -> {
                                 -1
                             }
                         }
                         if (predictMode == -1) {
                             toast(getString(R.string.alert_network_error))
+                            return
+                        }
+                        if (predictMode == -2) {
+                            toast("模型学习中，请稍候...")
                             return
                         }
                         val predictResult = when (result) {
@@ -303,6 +319,7 @@ class SensorService : Service() {
                             "Bus" -> getString(R.string.fragment_radio_bus)
                             "Train" -> getString(R.string.fragment_radio_train)
                             "Subway" -> getString(R.string.fragment_radio_subway)
+                            "not ready" -> getString(R.string.online_not_ready)
                             else -> {
                                 getString(R.string.n_a)
                             }

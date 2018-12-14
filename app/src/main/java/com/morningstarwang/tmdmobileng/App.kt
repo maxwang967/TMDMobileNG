@@ -14,6 +14,7 @@ open class App : Application() {
         var peakFlag = -1
         var isLogin = false
         var isUpdateChecked = false
+        var token = ""
 
         var isCollecting = false
         var isPredicting = false

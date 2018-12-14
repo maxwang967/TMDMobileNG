@@ -48,7 +48,7 @@ object ApiUtils {
             1 -> service?.predictICTOld(body)
             2 -> service?.predictHTC(body)
             3 -> service?.predictHuaweiA(body)
-            4 -> service?.predictHuaweiB(body)
+            4 -> service?.predictHuaweiB(body, "JWT " + App.token)
             else -> {
                 null
             }
@@ -65,9 +65,9 @@ object ApiUtils {
 
     fun reg(username: String, password: String): Call<ResponseBody>? {
         val service = retrofitDjango.create(Api::class.java)
-        val loginJson = "{\"username\":\"$username\", \"password\": \"$password\"}"
+        val regJson = "{\"username\":\"$username\", \"password\": \"$password\"}"
         val body =
-            RequestBody.create(MediaType.parse("application/json"), loginJson)
+            RequestBody.create(MediaType.parse("application/json"), regJson)
         return service.register(body)
     }
 

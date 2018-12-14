@@ -11,7 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.ViewModelProviders
-import com.google.android.material.tabs.TabLayout
 import com.morningstarwang.tmdmobileng.App
 import com.morningstarwang.tmdmobileng.DETECTION_MODEL
 import com.morningstarwang.tmdmobileng.R
@@ -63,26 +62,27 @@ class DetectionFragment : BaseFragment() {
     }
 
     private fun refreshDetectionModeUI() {
-        if (DETECTION_MODEL != -1) {
-            detectionTabLayout.getTabAt(DETECTION_MODEL)?.select()
-            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
-        } else {
-            DETECTION_MODEL = detectionTabLayout.selectedTabPosition
-            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
-        }
-        detectionTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabReselected(p0: TabLayout.Tab?) {
-            }
-
-            override fun onTabUnselected(p0: TabLayout.Tab?) {
-            }
-
-            override fun onTabSelected(p0: TabLayout.Tab?) {
-                DETECTION_MODEL = p0?.position!!
-                (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
-            }
-
-        })
+        DETECTION_MODEL = 4
+//        if (DETECTION_MODEL != -1) {
+//            detectionTabLayout.getTabAt(DETECTION_MODEL)?.select()
+//            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
+//        } else {
+//            DETECTION_MODEL = detectionTabLayout.selectedTabPosition
+//            (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
+//        }
+//        detectionTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+//            override fun onTabReselected(p0: TabLayout.Tab?) {
+//            }
+//
+//            override fun onTabUnselected(p0: TabLayout.Tab?) {
+//            }
+//
+//            override fun onTabSelected(p0: TabLayout.Tab?) {
+//                DETECTION_MODEL = p0?.position!!
+//                (currentViewModel as DetectionViewModel).loadDataToConfusionMatrix()
+//            }
+//
+//        })
     }
 
 
