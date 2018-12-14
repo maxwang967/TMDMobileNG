@@ -2,8 +2,14 @@
 语言支持：简体中文，英文
 
 Language Support: Simplified Chinese, English
+
 ## Branches
 Stable Branch: master
+
+**Feature Branch: online-learning <- Default**
+
+Fastest Branch: offline-learning
+
 
 **Feature Branch: online-learning <- Default**
 ## Introduction
