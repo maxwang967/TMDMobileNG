@@ -1,5 +1,6 @@
 package com.morningstarwang.tmdmobileng.ui.collect
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +23,6 @@ import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.databinding.FragmentCollectBinding
 import com.morningstarwang.tmdmobileng.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_collect.*
-import org.jetbrains.anko.support.v4.toast
 
 class CollectFragment : BaseFragment() {
 
@@ -169,9 +169,10 @@ class CollectFragment : BaseFragment() {
             chart.setBackgroundColor(ContextCompat.getColor(context!!, android.R.color.background_light))
             val dataSets = ArrayList<ILineDataSet>()
             val colors = arrayListOf(
-                ColorTemplate.VORDIPLOM_COLORS[0],
-                ColorTemplate.VORDIPLOM_COLORS[1],
-                ColorTemplate.VORDIPLOM_COLORS[2]
+                ColorTemplate.COLORFUL_COLORS[0],
+//                ColorTemplate.COLORFUL_COLORS[1],
+                Color.rgb(0, 0, 0),
+                ColorTemplate.COLORFUL_COLORS[2]
             )
             val numOfSet = if (index != 4) {
                 3
@@ -194,7 +195,7 @@ class CollectFragment : BaseFragment() {
                     "value"
                 }
                 val lineDataSet = LineDataSet(values, label)
-                lineDataSet.lineWidth = 0.5f
+                lineDataSet.lineWidth = 1.5f
                 lineDataSet.circleRadius = 0.5f
                 lineDataSet.color = colors[i]
                 lineDataSet.setDrawCircles(false)
