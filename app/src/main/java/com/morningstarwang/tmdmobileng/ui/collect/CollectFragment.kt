@@ -23,6 +23,7 @@ import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.databinding.FragmentCollectBinding
 import com.morningstarwang.tmdmobileng.ui.BaseFragment
 import kotlinx.android.synthetic.main.fragment_collect.*
+import org.jetbrains.anko.support.v4.toast
 
 class CollectFragment : BaseFragment() {
 

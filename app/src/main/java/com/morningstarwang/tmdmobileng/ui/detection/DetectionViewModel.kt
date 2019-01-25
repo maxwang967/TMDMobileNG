@@ -25,14 +25,14 @@ class DetectionViewModel(application: Application) : AndroidViewModel(applicatio
     var confusionMatrix = Array<Array<TextView?>>(9) { arrayOfNulls(9) }
     var matrixHeaders: Array<String> = arrayOf(
         "",
-        "静",
-        "行",
-        "跑",
-        "骑",
-        "车",
-        "交",
-        "火",
-        "地"
+        "Still",
+        "Walk",
+        "Run",
+        "Bike",
+        "Car",
+        "Bus",
+        "Train",
+        "Metro"
     )
 
     private var uiReceiver: BroadcastReceiver? = null

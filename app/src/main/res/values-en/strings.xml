@@ -83,4 +83,6 @@
     <string name="alert_username_null">Empty Username or password, please try again.</string>
     <string name="button_reg_login">BACK</string>
     <string name="online_not_ready">Learning</string>
+    <string name="alert_stop_all_first">Please stop data collection and model detection first.</string>
+    <string name="alert_hello">Hello, </string>
 </resources>

@@ -198,11 +198,12 @@
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:layout_height="0dp">
+
                     <TextView
-                        android:text="@string/fragment_detection_accuracy_model_current"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/fragment_detection_accuracy_model_current" />
                     <TextView
                         android:id="@+id/tvDetectionCurrentAccuracy"
                         android:text="@{viewModel.predictCurrentAccuracy}"
@@ -218,11 +219,12 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp">
+
                     <TextView
-                        android:text="@string/fragment_detection_accuracy_vote_current"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/fragment_detection_accuracy_vote_current" />
                     <TextView
                         android:id="@+id/tvDetectionCurrentAccuracyVote"
                         android:text="@{viewModel.voteCurrentAccuracy}"
@@ -243,11 +245,12 @@
                     android:layout_width="match_parent"
                     android:layout_weight="1"
                     android:layout_height="0dp">
+
                     <TextView
-                        android:text="@string/fragment_detection_accuracy_model_total"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/fragment_detection_accuracy_model_total" />
                     <TextView
                         android:id="@+id/tvDetectionTotalAccuracy"
                         android:text="@{viewModel.predictTotalAccuracy}"
@@ -263,11 +266,12 @@
                     android:layout_weight="1"
                     android:layout_width="match_parent"
                     android:layout_height="0dp">
+
                     <TextView
-                        android:text="@string/fragment_detection_accuracy_vote_total"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:text="@string/fragment_detection_accuracy_vote_total" />
                     <TextView
                         android:id="@+id/tvDetectionTotalAccuracyVote"
                         android:text="@{viewModel.voteTotalAccuracy}"

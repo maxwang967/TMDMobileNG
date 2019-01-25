@@ -104,7 +104,7 @@ class MainFragment : BaseFragment() {
             if (App.isCollecting ||
                 App.isPredicting
             ) {
-                toast("请先停止数据采集和模式识别操作。")
+                toast(getString(R.string.alert_stop_all_first))
                 btnModeSelect.isChecked = true
                 return@setOnCheckedChangeListener
             }

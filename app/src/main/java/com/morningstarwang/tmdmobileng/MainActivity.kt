@@ -151,7 +151,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                 Thread.sleep(5000)
                 e("network error:", e.message)
                 uiThread {
-                    toast("网络异常，原因是：${e.message}")
+                    toast("Internet error, the reason is：${e.message}")
                 }
                 checkForUpdate()
                 return@doAsync
@@ -166,12 +166,12 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                     val context = this
                     AlertDialog.Builder(this).apply {
                         setTitle(getString(R.string.software_update))
-                        setMessage("我们做了以下工作：\n" + updateInfo.description)
+                        setMessage("We have done the following work：\n" + updateInfo.description)
                         if (updateInfo.force == 0) {
-                            setNegativeButton("暂不更新") { _, _ ->
+                            setNegativeButton("Not Yet") { _, _ ->
                             }
                         }
-                        setPositiveButton("立即更新") { _, _ ->
+                        setPositiveButton("Update Now") { _, _ ->
                             downloadAPK(context, updateInfo)
                         }
                         setCancelable(false)
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                     ApiUtils.login(edtUsername.text.toString(), edtPassword.text.toString())
                         ?.enqueue(object : retrofit2.Callback<ResponseBody> {
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                toast("网络连接错误，原因是：" + t.message)
+                                toast("Internet error, the reason is：" + t.message)
                                 showLoginDialog()
                                 return
                             }
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                                 if (response.body() == null) {
                                     //登录失败
-                                    toast("用户名或密码错误，请重试。")
+                                    toast("Username or password is incorrect.")
                                     edtUsername.text.clear()
                                     edtPassword.text.clear()
                                     showLoginDialog()
@@ -230,8 +230,8 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                                     App.token = token.token
                                     editor.commit()
                                     ivHeader.setImageDrawable(getDrawable(R.mipmap.login))
-                                    tvHeader.text = "你好，${edtUsername.text.toString()}!"
-                                    toast("登录成功！")
+                                    tvHeader.text = getString(R.string.alert_hello) + edtUsername.text + "!"
+                                    toast("Login successfully！")
                                     App.isLogin = true
                                 }
 
@@ -239,7 +239,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
 
                         })
                 } else {
-                    toast("用户名或密码为空。")
+                    toast("Username or password is empty.")
                     showLoginDialog()
                     return@positiveButton
                 }
@@ -288,14 +288,14 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                     ApiUtils.reg(edtRegUsername.text.toString(), edtRegPassword.text.toString())
                         ?.enqueue(object : Callback<ResponseBody> {
                             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                                toast("网络连接错误，原因是：" + t.message)
+                                toast("Internet error, the reason is：" + t.message)
                                 showRegDialog(context)
                                 return
                             }
 
                             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                                 if (response.body() == null) {
-                                    toast("注册失败，请检查用户名和密码拼写是否正确。")
+                                    toast("Register failed.")
                                     showRegDialog(context)
                                     return
                                 }
@@ -303,11 +303,11 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
                                 val gson = Gson()
                                 val user = gson.fromJson(userJson, User::class.java)
                                 if (user.username == "nan" && user.password == "nan") {
-                                    toast("用户名不合法或已存在，请重新输入填写注册信息。")
+                                    toast("Username is illegal.")
                                     showRegDialog(context)
                                     return
                                 } else {
-                                    toast("注册成功，请登录。")
+                                    toast("Register successfully, please login now.")
                                     showLoginDialog()
                                     return
                                 }
@@ -334,7 +334,7 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             null
         }
         request?.apply {
-            setTitle("交通模式识别NG软件更新")
+            setTitle("TMDMobileNG Software Update")
             setDescription(updateInfo.description)
             allowScanningByMediaScanner()
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
