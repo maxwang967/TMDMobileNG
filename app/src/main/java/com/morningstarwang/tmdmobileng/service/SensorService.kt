@@ -202,19 +202,19 @@ class SensorService : Service() {
             }
             when (event?.sensor?.type) {
                 Sensor.TYPE_LINEAR_ACCELERATION -> {
-                    val data = SensorData(event.values[0], event.values[1], event.values[2])
+                    val data = SensorData(event.timestamp, event.values[0], event.values[1], event.values[2])
                     laccList.add(data)
                 }
                 Sensor.TYPE_ACCELEROMETER -> {
-                    val data = SensorData(event.values[0], event.values[1], event.values[2])
+                    val data = SensorData(event.timestamp, event.values[0], event.values[1], event.values[2])
                     accList.add(data)
                 }
                 Sensor.TYPE_GYROSCOPE -> {
-                    val data = SensorData(event.values[0], event.values[1], event.values[2])
+                    val data = SensorData(event.timestamp, event.values[0], event.values[1], event.values[2])
                     gyrList.add(data)
                 }
                 Sensor.TYPE_MAGNETIC_FIELD -> {
-                    val data = SensorData(event.values[0], event.values[1], event.values[2])
+                    val data = SensorData(event.timestamp, event.values[0], event.values[1], event.values[2])
                     magList.add(data)
                 }
                 Sensor.TYPE_PRESSURE -> {

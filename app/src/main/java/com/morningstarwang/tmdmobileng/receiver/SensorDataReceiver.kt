@@ -50,7 +50,7 @@ class SensorDataReceiver : BroadcastReceiver() {
                     val pressure = pressureList?.get(i)
 
                     val content =
-                        "$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1},${App.peakFlag}\n"
+                        "${laccList?.get(i)?.timestamp},$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1},${App.peakFlag}\n"
                     if (App.peakFlag != -1) {
                         App.peakFlag = -1
                     }
@@ -70,7 +70,7 @@ class SensorDataReceiver : BroadcastReceiver() {
                     if (!directory.exists()) {
                         directory.mkdir()
                     }
-                    val saveFile = File(path, "$modeName-$TIMESTAMP-NG-withPeak.csv")
+                    val saveFile = File(path, "$modeName-$TIMESTAMP-201904.csv")
                     saveFile.appendText(content)
 
                 }
