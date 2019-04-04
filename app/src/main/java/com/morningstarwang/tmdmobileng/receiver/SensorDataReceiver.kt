@@ -5,10 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Environment
 import android.util.Log.e
-import com.morningstarwang.tmdmobileng.App
-import com.morningstarwang.tmdmobileng.REAL_MODE
-import com.morningstarwang.tmdmobileng.TIMESTAMP
-import com.morningstarwang.tmdmobileng.WINDOW_SIZE
+import com.morningstarwang.tmdmobileng.*
 import com.morningstarwang.tmdmobileng.bean.SensorData
 import com.morningstarwang.tmdmobileng.utils.runOnIoThread
 import java.io.File
@@ -50,7 +47,8 @@ class SensorDataReceiver : BroadcastReceiver() {
                     val pressure = pressureList?.get(i)
 
                     val content =
-                        "${laccList?.get(i)?.timestamp},$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1},${App.peakFlag}\n"
+                        "${laccList?.get(i)?.timestamp},$accX,$accY,$accZ,$laccX,$laccY,$laccZ,$gyrX,$gyrY,$gyrZ,$magX,$magY,$magZ,$pressure,${REAL_MODE + 1},${App.peakFlag}," +
+                                "$altitude,$accuracy,$bearing,$latitude,$longitude,$speed,$time,$elapsedRealtimeNanos,$provider\n"
                     if (App.peakFlag != -1) {
                         App.peakFlag = -1
                     }

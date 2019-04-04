@@ -6,9 +6,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.Color
+import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.provider.Settings
 import android.util.Log.e
 import android.view.Gravity
 import android.view.ViewGroup
@@ -399,9 +401,18 @@ class MainActivity : AppCompatActivity(), LifecycleObserver {
             .addRequestCode(100)
             .permissions(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_LOCATION_EXTRA_COMMANDS
             )
             .request()
+        val locationManager: LocationManager = this.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val isOpen = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        if (!isOpen){
+            val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+            startActivity(intent)
+        }
     }
 
 

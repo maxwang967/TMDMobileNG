@@ -30,6 +30,17 @@ var DETECTION_MODEL = -1
 //时间戳
 var TIMESTAMP = 0L
 
+//GPS信息
+var altitude: Double = -1.0
+var accuracy: Float = -1f
+var bearing: Float = -1f
+var latitude: Double = -1.0
+var longitude: Double = -1.0
+var speed: Float = -1f
+var time: Long = -1L
+var elapsedRealtimeNanos: Long = -1L
+var provider: String = "N/A"
+
 //更新URL
 const val UPDATE_URL = "https://service.morningstarwang.com/temp/ict/tmd_app/update.json"
 //公告URL

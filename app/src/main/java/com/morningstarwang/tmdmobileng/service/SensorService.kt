@@ -12,6 +12,10 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.SensorManager.SENSOR_DELAY_FASTEST
 import android.hardware.SensorManager.SENSOR_DELAY_GAME
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.*
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.util.Log.e
@@ -39,6 +43,7 @@ class SensorService : Service() {
 
     private var sensorManager: android.hardware.SensorManager? =
         null
+    private var locationManager: LocationManager? = null
     private var lAccSensor: Sensor? = null
     private var accSensor: Sensor? = null
     private var gyrSensor: Sensor? = null
@@ -65,16 +70,25 @@ class SensorService : Service() {
         Array(8) { 0 },
         Array(8) { 0 }
     )
-
     private var wakeLock: PowerManager.WakeLock? = null
 
-    @SuppressLint("WakelockTimeout")
+    @SuppressLint("WakelockTimeout", "MissingPermission")
     override fun onCreate() {
         i("SensorService", "onCreate")
         e("Service-Thread", Thread.currentThread().name)
         if (sensorManager == null) {
             sensorManager = applicationContext.getSystemService(Context.SENSOR_SERVICE) as SensorManager?
         }
+
+        if (locationManager == null){
+            locationManager = applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
+        }
+
+        val bestProvider = locationManager?.getBestProvider(
+            getLocationCriteria(),true
+        )
+        val location = locationManager?.getLastKnownLocation(bestProvider)
+        locationManager?.requestLocationUpdates(LocationManager.GPS_PROVIDER, 100, 1f, locationListener)
 
         lAccSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION)
         accSensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -97,6 +111,54 @@ class SensorService : Service() {
         return null
     }
 
+
+    // 位置监听
+    val locationListener = object : LocationListener{
+
+        override fun onLocationChanged(location: Location?) {
+            toast("location changed")
+            altitude = location!!.altitude
+            accuracy = location.accuracy
+            bearing = location.bearing
+            latitude = location.latitude
+            longitude = location.longitude
+            speed = location.speed
+            time = location.time
+            elapsedRealtimeNanos = location.elapsedRealtimeNanos
+            provider = location.provider
+        }
+
+        override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+
+        }
+
+        override fun onProviderEnabled(provider: String?) {
+
+        }
+
+        override fun onProviderDisabled(provider: String?) {
+
+        }
+    }
+
+
+    /**
+     * 返回查询条件
+     *
+     * @return
+     */
+    private  fun getLocationCriteria(): Criteria
+    {
+        val criteria = Criteria()
+        // 设置定位精确度 Criteria.ACCURACY_COARSE比较粗略，Criteria.ACCURACY_FINE则比较精细
+        criteria.accuracy = Criteria.ACCURACY_FINE
+        criteria.isSpeedRequired = true // 设置是否要求速度
+        criteria.isCostAllowed = false // 设置是否允许运营商收费
+        criteria.isBearingRequired = true // 设置是否需要方位信息
+        criteria.isAltitudeRequired = true // 设置是否需要海拔信息
+        criteria.powerRequirement = Criteria.POWER_MEDIUM // 设置对电源的需求
+        return criteria
+    }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID).apply {
             setSmallIcon(R.mipmap.icon)
@@ -286,7 +348,7 @@ class SensorService : Service() {
                         if (result.contains("{")) {
                             val resultObject = gson.fromJson(result, Result::class.java)
                             result = resultObject.result
-                            e("online-learning-not-null", result)
+                            e("ol-not-null", result)
                         }
                         val predictMode = when (result) {
                             "Still" -> 0
