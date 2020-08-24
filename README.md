@@ -1,3 +1,5 @@
+**For the MSRLSTM model implementation code, please refer to: https://github.com/morningstarwang/MSRLSTM-open**
+
 # TMDMobileNG
 语言支持：简体中文，英文
 
